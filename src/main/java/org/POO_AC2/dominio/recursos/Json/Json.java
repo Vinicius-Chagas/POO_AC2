@@ -15,37 +15,39 @@ public class Json {
 
     private static ObjectMapper objectMapper = getDefaultObjectMapper();
 
+    // Esta função instancia um Objectmapper, classe do Jackson que mapeia um objeto e o trasforma em Json. Foi feita uma função para instanciar o objeto por causa das configurações que ele pode carregar.
     public static ObjectMapper getDefaultObjectMapper(){
         ObjectMapper defaultObjectMapper = new ObjectMapper();
-        defaultObjectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        defaultObjectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY); // Configuração para guardar o tipo do objeto no json
 
         return defaultObjectMapper;
     }
 
+    // Parse Json pega uma string em formato json e transforma em um Hashmap chave valor.
     public static JsonNode parse(String src) throws JsonProcessingException {
         return objectMapper.readTree(src);
     }
 
-    public static <A> A fromJson(JsonNode node, Class<A> clazz) throws JsonProcessingException {
+    public static <A> A fromJson(JsonNode node, Class<A> clazz) throws JsonProcessingException { // Transforma um Jsom em um objeto da classe passada
         return objectMapper.treeToValue(node, clazz);
     }
 
     public static JsonNode toJson(Object a){
         return objectMapper.valueToTree(a);
-    }
+    } // Transforma um objeto em Json
 
-    public static String stringfy(Object a) throws JsonProcessingException {
+    public static void stringfy(Object a) throws JsonProcessingException { // Printa um objeto como string
         ObjectWriter objectWriter = objectMapper.writer();
         objectWriter = objectWriter.with(SerializationFeature.INDENT_OUTPUT);
 
-        return objectWriter.writeValueAsString(a);
+        System.out.println(objectWriter.writeValueAsString(a));
     }
 
-    public static void writeAllData(ArrayList<?> Array, File file) throws IOException {
+    public static void writeAllData(ArrayList<?> Array, File file) throws IOException { // Escreve um array de objetos de um determinado tipo em um arquivo
         objectMapper.writeValue(file, Array);
     }
 
-    public static <T> ArrayList<T> readAllData(File file, Class<T> objectType) throws IOException {
+    public static <T> ArrayList<T> readAllData(File file, Class<T> objectType) throws IOException { // lê um arquivo e instancia um array de determinado tipo
         FileInputStream fileInputStream = new FileInputStream(file);
 
         ArrayList<T> list = objectMapper.readValue(fileInputStream, new TypeReference<ArrayList<T>>() {

@@ -1,5 +1,14 @@
 package org.POO_AC2.dominio.produto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.POO_AC2.dominio.cliente.PF;
+import org.POO_AC2.dominio.cliente.PJ;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type") // Notação Json que define como o tipo da classe deve ser armazenado no json
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PF.class, name = "Pereciveis"), // define que esta classe tem uma subclasse pereciveis
+})
 public class Produto {
     protected Long codigo;
     protected String nomeProduto;

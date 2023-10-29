@@ -1,8 +1,16 @@
 package org.POO_AC2.dominio.produto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.POO_AC2.dominio.cliente.PF;
+import org.POO_AC2.dominio.cliente.PJ;
+
 import java.time.LocalDate;
 
 //classe dependente de Produto
+
+@JsonTypeName("Pereciveis") // Define o tipo desta classe para que o jackson armazene no json
 public class Pereciveis extends Produto {
     private LocalDate dataValidade;
 

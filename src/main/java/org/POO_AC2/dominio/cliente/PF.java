@@ -2,7 +2,7 @@ package org.POO_AC2.dominio.cliente;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-@JsonTypeName("PF")
+@JsonTypeName("PF") // Define o tipo desta classe para que o jackson armazene no json
 public class PF extends Cliente {
     private String cpf;
     private int qntParcelasMax;

@@ -3,10 +3,10 @@ package org.POO_AC2.dominio.cliente;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type") // Notação Json que define como o tipo da classe deve ser armazenado no json
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PF.class, name = "PF"),
-        @JsonSubTypes.Type(value = PJ.class, name = "PJ")
+        @JsonSubTypes.Type(value = PF.class, name = "PF"), // define que esta classe tem uma subclasse PF
+        @JsonSubTypes.Type(value = PJ.class, name = "PJ") // define que esta classe tem uma subclasse PJ
 })
 public abstract class Cliente {
     private String nome;

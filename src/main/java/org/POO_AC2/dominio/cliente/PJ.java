@@ -3,7 +3,7 @@ package org.POO_AC2.dominio.cliente;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 //Pessoa Jurídica, filho de Cliente
-@JsonTypeName("PJ")
+@JsonTypeName("PJ") // Define o tipo desta classe para que o jackson armazene no json
 public class PJ extends Cliente {
     private String cnpj;
     private String razaoSocial;

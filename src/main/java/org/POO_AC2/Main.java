@@ -29,8 +29,16 @@ public class Main{
 
         ba.clear();
 
-        Relatorios r = new Relatorios();
+        ba.addAll(Json.readAllData(file, Cliente.class));
 
-        r.procurarClientePorNome("ja");
+        ba.get(1).setNome("arroy");
+
+        Json.writeAllData(ba, file);
+
+        ba.clear();
+
+        ba.addAll(Json.readAllData(file, Cliente.class));
+
+        Json.stringfy(ba);
     }
 }
