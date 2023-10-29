@@ -1,12 +1,20 @@
-package org.POO_AC2.domain.compra;
-
-import org.POO_AC2.domain.cliente.Cliente;
+package org.POO_AC2.dominio.compra;
 
 public class ItemCompra {
     private int qtde;
     private Long codigoProduto;
     private Double precoUnitario;
     private Double valorTotal;
+
+    public ItemCompra(int qtde, Long codigoProduto, Double precoUnitario, Double valorTotal) {
+        this.qtde = qtde;
+        this.codigoProduto = codigoProduto;
+        this.precoUnitario = precoUnitario;
+        this.valorTotal = valorTotal;
+    }
+
+    public ItemCompra() {
+    }
 
     public int getQtde(){
         return qtde;
@@ -34,5 +42,15 @@ public class ItemCompra {
     }
     public void setValorTotal(Double val){
         this.valorTotal = val;
+    }
+
+
+    public String paraString() {
+        return "ItemCompra{" +
+                "qtde=" + qtde +
+                ", codigoProduto=" + codigoProduto +
+                ", precoUnitario=" + precoUnitario +
+                ", valorTotal=" + valorTotal +
+                '}';
     }
 }

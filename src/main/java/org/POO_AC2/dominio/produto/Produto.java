@@ -1,10 +1,20 @@
-package org.POO_AC2.domain.produto;
+package org.POO_AC2.dominio.produto;
 
 public class Produto {
     protected Long codigo;
     protected String nomeProduto;
     protected String descricao;
     protected double preco;
+
+    public Produto(Long codigo, String nomeProduto, String descricao, double preco) {
+        this.codigo = codigo;
+        this.nomeProduto = nomeProduto;
+        this.descricao = descricao;
+        this.preco = preco;
+    }
+
+    public Produto() {
+    }
 
     //funções de pegar e definir o nome dos componentes
     public Long getCodigo(){

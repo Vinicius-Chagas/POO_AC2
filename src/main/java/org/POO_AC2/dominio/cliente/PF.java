@@ -1,8 +1,20 @@
-package org.POO_AC2.domain.cliente;
+package org.POO_AC2.dominio.cliente;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("PF")
 public class PF extends Cliente {
     private String cpf;
     private int qntParcelasMax;
+
+    public PF(String nome, Endereco endereco, String dataCadastro, String cpf, int qntParcelasMax) {
+        super(nome, endereco, dataCadastro);
+        this.cpf = cpf;
+        this.qntParcelasMax = qntParcelasMax;
+    }
+
+    public PF() {
+    }
 
     public String getCpf() {
         return cpf;
