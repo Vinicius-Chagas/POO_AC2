@@ -16,9 +16,6 @@ public class Pereciveis extends Produto {
 
     //funções
     public boolean Vencido(){
-        boolean vencido;
-        if (LocalDateTime.now() > dataValidade)
-        {vencido = true;}else vencido=false;
-        return vencido;
+        return LocalDate.now().isAfter(dataValidade);
     }
 }
