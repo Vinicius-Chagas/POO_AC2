@@ -1,10 +1,10 @@
 package org.POO_AC2.domain.produto;
 
 public class Produto {
-    private Long codigo;
-    private String nomeProduto;
-    private String descricao;
-    private double preco;
+    protected Long codigo;
+    protected String nomeProduto;
+    protected String descricao;
+    protected double preco;
 
     //funções de pegar e definir o nome dos componentes
     public Long getCodigo(){

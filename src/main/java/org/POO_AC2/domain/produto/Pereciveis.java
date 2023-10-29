@@ -1,7 +1,6 @@
 package org.POO_AC2.domain.produto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 //classe dependente de Produto
 public class Pereciveis extends Produto {
@@ -17,5 +16,15 @@ public class Pereciveis extends Produto {
     //funções
     public boolean Vencido(){
         return LocalDate.now().isAfter(dataValidade);
+    }
+
+    public String ParaString(){
+        return "Produto{" +
+        "Codigo: '" + codigo + '\'' +
+        ", Nome : '" + nomeProduto + '\'' +
+        ", Descricao: " + descricao + '\'' +
+        ", Preco: " + preco + '\'' +
+        ", Vencido: "+ (Vencido() ? "Sim":"Não") +
+        '}';
     }
 }
