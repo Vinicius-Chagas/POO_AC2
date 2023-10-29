@@ -23,8 +23,8 @@ public class PF extends Cliente {
     @Override
     public String ParaString() {
         return "PF{" +
-                "cpf='" + cpf + '\'' +
-                ", qntParcelasMax=" + qntParcelasMax +
+                "cpf: '" + cpf + '\'' +
+                ", qntParcelasMax: " + qntParcelasMax +
                 '}';
     }
 }
