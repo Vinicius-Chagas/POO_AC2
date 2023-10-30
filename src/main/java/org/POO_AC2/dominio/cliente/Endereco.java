@@ -1,4 +1,4 @@
-package org.POO_AC2.domain.cliente;
+package org.POO_AC2.dominio.cliente;
 
 public class Endereco {
     private String rua;
@@ -7,6 +7,18 @@ public class Endereco {
     private int cep;
     private String cidade;
     private String estado;
+
+    public Endereco(String rua, int numero, String bairro, int cep, String cidade, String estado) {
+        this.rua = rua;
+        this.numero = numero;
+        this.bairro = bairro;
+        this.cep = cep;
+        this.cidade = cidade;
+        this.estado = estado;
+    }
+
+    public Endereco() {
+    }
 
     public String getRua() {
         return rua;
@@ -48,5 +60,16 @@ public class Endereco {
     }
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String paraString() {
+        return "Endereco{" +
+                "rua='" + rua + '\'' +
+                ", numero=" + numero +
+                ", bairro='" + bairro + '\'' +
+                ", cep=" + cep +
+                ", cidade='" + cidade + '\'' +
+                ", estado='" + estado + '\'' +
+                '}';
     }
 }
