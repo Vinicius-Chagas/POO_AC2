@@ -15,30 +15,6 @@ import java.util.ArrayList;
 public class Main{
 
     public static void main(String[] args) throws IOException {
-        PJ a = new PJ("jonas",new Endereco(), LocalDate.now().toString(), "21312312", "J&J",12);
-        PF b = new PF("jao",new Endereco(),LocalDate.now().toString(),"321321",23);
 
-        ArrayList<Cliente> ba = new ArrayList<>();
-
-        ba.add(a);
-        ba.add(b);
-
-        File file = new File("Cliente.json");
-
-        Json.writeAllData(ba,file);
-
-        ba.clear();
-
-        ba.addAll(Json.readAllData(file, Cliente.class));
-
-        ba.get(1).setNome("arroy");
-
-        Json.writeAllData(ba, file);
-
-        ba.clear();
-
-        ba.addAll(Json.readAllData(file, Cliente.class));
-
-        Json.stringfy(ba);
     }
 }
