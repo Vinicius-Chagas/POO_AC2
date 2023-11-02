@@ -1,21 +1,16 @@
 package org.POO_AC2.dominio.recursos.relatorios;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.POO_AC2.dominio.cliente.Cliente;
-import org.POO_AC2.dominio.cliente.PF;
-import org.POO_AC2.dominio.cliente.PJ;
 import org.POO_AC2.dominio.compra.Compra;
 import org.POO_AC2.dominio.produto.Pereciveis;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
-import org.w3c.dom.ls.LSOutput;
+
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
