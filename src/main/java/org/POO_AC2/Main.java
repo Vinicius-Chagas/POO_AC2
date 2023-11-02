@@ -3,9 +3,15 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import org.POO_AC2.dominio.cliente.Endereco;
+import org.POO_AC2.dominio.cliente.PF;
+
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import java.awt.GridLayout;
@@ -62,27 +68,102 @@ public class Main {
                             null
                             );
                         
-                       if (tipoResultado == JOptionPane.OK_OPTION) {
-    Enumeration<AbstractButton> elements = tipoGroup.getElements();
-    int j = 0;
-    while (elements.hasMoreElements()) {
-        AbstractButton button = elements.nextElement();
-        if (button.isSelected()) {
-            switch(j) {
-                case 0:
-                    JOptionPane.showMessageDialog(null, "Você selecionou: pessoa física" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
-                    break;
-                case 1:
-                    JOptionPane.showMessageDialog(null, "Você selecionou: pessoa Jurídica" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
-                    break;
-            }
-            break;
-        }
-        j++;
-    }
-} else {
-    JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo, JOptionPane.WARNING_MESSAGE, null);
-}
+                        if (tipoResultado == JOptionPane.OK_OPTION) {
+                            Enumeration<AbstractButton> elements = tipoGroup.getElements();
+                            int j = 0;
+                            while (elements.hasMoreElements()) {
+                                AbstractButton button = elements.nextElement();
+                                if (button.isSelected()) {
+                                    switch(j) {
+                                        case 0://caso pessoa física
+                                        
+                                        //cria o JPanel para exibição dos campos e coleta de dados.
+                                        JPanel cadastroPFPanel = new JPanel(new GridLayout(10, 2));
+                                    
+                                        //campos para dados da pessoa física
+                                        cadastroPFPanel.add(new JLabel("Nome:"));
+                                        JTextField nomeField = new JTextField();
+                                        cadastroPFPanel.add(nomeField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Rua:"));
+                                        JTextField ruaField = new JTextField();
+                                        cadastroPFPanel.add(ruaField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Número:"));
+                                        JTextField numeroField = new JTextField();
+                                        cadastroPFPanel.add(numeroField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Bairro:"));
+                                        JTextField bairroField = new JTextField();
+                                        cadastroPFPanel.add(bairroField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("CEP:"));
+                                        JTextField cepField = new JTextField();
+                                        cadastroPFPanel.add(cepField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Cidade:"));
+                                        JTextField cidadeField = new JTextField();
+                                        cadastroPFPanel.add(cidadeField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Estado:"));
+                                        JTextField estadoField = new JTextField();
+                                        cadastroPFPanel.add(estadoField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Data de Cadastro:"));
+                                        JTextField dataCadastroField = new JTextField();
+                                        cadastroPFPanel.add(dataCadastroField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("CPF:"));
+                                        JTextField cpfField = new JTextField();
+                                        cadastroPFPanel.add(cpfField);
+                                    
+                                        cadastroPFPanel.add(new JLabel("Quantidade Máxima de Parcelas:"));
+                                        JTextField qntParcelasMaxField = new JTextField();
+                                        cadastroPFPanel.add(qntParcelasMaxField);
+                                        
+                                        //local de exibição com o JOptionPane 
+                                        int cadastroPFResultado = JOptionPane.showConfirmDialog(
+                                            null,
+                                            cadastroPFPanel, 
+                                            "Cadastro de Pessoa Física", 
+                                            JOptionPane.OK_CANCEL_OPTION, 
+                                            JOptionPane.PLAIN_MESSAGE, 
+                                            null
+                                        );
+                                        
+                                        //se clicar em ok, os dados são coletados
+                                        if (cadastroPFResultado == JOptionPane.OK_OPTION) {
+                                            String nome = nomeField.getText();
+                                            String rua = ruaField.getText();
+                                            int numero = Integer.parseInt(numeroField.getText());
+                                            String bairro = bairroField.getText();
+                                            int cep = Integer.parseInt(cepField.getText());
+                                            String cidade = cidadeField.getText();
+                                            String estado = estadoField.getText();
+                                            Endereco endereco = new Endereco(rua, numero, bairro, cep, cidade, estado);
+                                            String dataCadastro = dataCadastroField.getText();
+                                            String cpf = cpfField.getText();
+                                            int qntParcelasMax = Integer.parseInt(qntParcelasMaxField.getText());
+                                            
+                                            //com os dados coletados, cria um novo pf, que agora pode ser adicionado no json
+                                            PF pf = new PF(nome, endereco, dataCadastro, cpf, qntParcelasMax);
+                                    
+                                            //precisa salvar no json agora
+                                        } else {//se não clicou em ok, cadastro é cancelado
+                                            JOptionPane.showMessageDialog(null, "Cadastro de Pessoa Física cancelado.", titulo, JOptionPane.WARNING_MESSAGE, null);
+                                        }
+                                    break;//fim do cadastro de pessoa física
+                                        case 1:
+                                            JOptionPane.showMessageDialog(null, "Você selecionou: pessoa Jurídica" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
+                                            break;
+                                    }
+                                    break;
+                                }
+                                j++;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo, JOptionPane.WARNING_MESSAGE, null);
+                        }
                         case 1:
                             // Código para "Deletar Cliente pelo CPF ou CNPJ"
                             break;
