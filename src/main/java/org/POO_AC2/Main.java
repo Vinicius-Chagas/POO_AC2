@@ -40,8 +40,40 @@ public class Main {
                 if (group.getElements().nextElement().isSelected()) {
                     switch(i) {
                         case 0:
-                            // Código para "Cadastros de Clientes"
-                            break;
+                        String[] tipoCliente = {"Pessoa Física", "Pessoa Jurídica"};
+                        JPanel tipoPanel = new JPanel(new GridLayout(tipoCliente.length, 1));
+                        ButtonGroup tipoGroup = new ButtonGroup();
+                        
+                        for (String tipo : tipoCliente) {
+                            JRadioButton tipoRadioButton = new JRadioButton(tipo);
+                            tipoPanel.add(tipoRadioButton);
+                            tipoGroup.add(tipoRadioButton);
+                        }
+                        
+                        int tipoResultado = JOptionPane.showConfirmDialog(
+                            null,
+                            tipoPanel, 
+                            "Por favor, escolha o tipo de cliente:", 
+                            JOptionPane.OK_CANCEL_OPTION, 
+                            JOptionPane.PLAIN_MESSAGE, 
+                            null
+                            );
+                        
+                        if (tipoResultado == JOptionPane.OK_OPTION) {
+                            for (int j = 0; j < tipoCliente.length; j++) {
+                                if (tipoGroup.getElements().nextElement().isSelected()) {
+                                    if ("Pessoa Física".equals(tipoCliente[j])) {
+                                        JOptionPane.showMessageDialog(null, "Você selecionou: pessoa física" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
+                                    } else if ("Pessoa Jurídica".equals(tipoCliente[j])) {
+                                     JOptionPane.showMessageDialog(null, "Você selecionou: pessoa Jurídica" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
+                                    }
+                                    break;
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo, JOptionPane.WARNING_MESSAGE, null);
+                        }
+                        break;
                         case 1:
                             // Código para "Deletar Cliente pelo CPF ou CNPJ"
                             break;
