@@ -47,18 +47,23 @@ public class Main {
         if (resultado == JOptionPane.OK_OPTION) {
             for (int i = 0; i < opcoes.length; i++) {
                 if (group.getElements().nextElement().isSelected()) {
+                    do{
                     switch(i) {
-                        case 0:
+                        case 0://cadastro PF || PJ
+                        //opções do tipo de cadastro
                         String[] tipoCliente = {"Pessoa Física", "Pessoa Jurídica"};
+                        //JPanel para melhor exibição e UX.
                         JPanel tipoPanel = new JPanel(new GridLayout(tipoCliente.length, 1));
                         ButtonGroup tipoGroup = new ButtonGroup();
                         
+                        //criação dos botões de PF e PJ
                         for (String tipo : tipoCliente) {
                             JRadioButton tipoRadioButton = new JRadioButton(tipo);
                             tipoPanel.add(tipoRadioButton);
                             tipoGroup.add(tipoRadioButton);
                         }
                         
+                        //JOptionPane -> Tela de escolha do cliente
                         int tipoResultado = JOptionPane.showConfirmDialog(
                             null,
                             tipoPanel, 
@@ -76,7 +81,7 @@ public class Main {
                                 if (button.isSelected()) {
                                     switch(j) {
                                         case 0://caso pessoa física
-                                        
+
                                         //cria o JPanel para exibição dos campos e coleta de dados.
                                         JPanel cadastroPFPanel = new JPanel(new GridLayout(10, 2));
                                     
@@ -187,6 +192,7 @@ public class Main {
                             System.exit(0);
                     }
                     break;
+                    }while(true);
                 }
             }
         } else {
