@@ -1,9 +1,12 @@
 package org.POO_AC2;
 import java.io.IOException;
+import java.util.Enumeration;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import java.awt.GridLayout;
 
@@ -59,21 +62,27 @@ public class Main {
                             null
                             );
                         
-                        if (tipoResultado == JOptionPane.OK_OPTION) {
-                            for (int j = 0; j < tipoCliente.length; j++) {
-                                if (tipoGroup.getElements().nextElement().isSelected()) {
-                                    if ("Pessoa Física".equals(tipoCliente[j])) {
-                                        JOptionPane.showMessageDialog(null, "Você selecionou: pessoa física" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
-                                    } else if ("Pessoa Jurídica".equals(tipoCliente[j])) {
-                                     JOptionPane.showMessageDialog(null, "Você selecionou: pessoa Jurídica" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
-                                    }
-                                    break;
-                                }
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo, JOptionPane.WARNING_MESSAGE, null);
-                        }
-                        break;
+                       if (tipoResultado == JOptionPane.OK_OPTION) {
+    Enumeration<AbstractButton> elements = tipoGroup.getElements();
+    int j = 0;
+    while (elements.hasMoreElements()) {
+        AbstractButton button = elements.nextElement();
+        if (button.isSelected()) {
+            switch(j) {
+                case 0:
+                    JOptionPane.showMessageDialog(null, "Você selecionou: pessoa física" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
+                    break;
+                case 1:
+                    JOptionPane.showMessageDialog(null, "Você selecionou: pessoa Jurídica" , titulo, JOptionPane.INFORMATION_MESSAGE, null);
+                    break;
+            }
+            break;
+        }
+        j++;
+    }
+} else {
+    JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo, JOptionPane.WARNING_MESSAGE, null);
+}
                         case 1:
                             // Código para "Deletar Cliente pelo CPF ou CNPJ"
                             break;
