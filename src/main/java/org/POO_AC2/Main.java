@@ -53,14 +53,19 @@ public class Main {
 
             if (resultado == JOptionPane.OK_OPTION) {
                 boolean opcaoSelecionada = false;
-                for (int i = 0; i < opcoes.length; i++) {
-                    if (group.getElements().nextElement().isSelected()) {
+                Enumeration<AbstractButton> elements = group.getElements();
+                while (elements.hasMoreElements()) {
+                    AbstractButton button = elements.nextElement();
+        
+                    if (button.isSelected()) {
 
-                        switch (i) {
-                            case 0:// cadastro PF || PJ
+                        String buttonText = button.getText();
+
+                        switch (buttonText) {
+                            case "[1] Cadastros de Clientes":// cadastro PF || PJ
                                 cadastroDoCliente();
                                 break;
-                            case 1:
+                            case "[2] Deletar Cliente pelo CPF ou CNPJ":
                                 // Código para "Deletar Cliente pelo CPF ou CNPJ"
                                 JPanel delecaoClientePanel = new JPanel(new GridLayout(1, 1));
                                 delecaoClientePanel.add(new JLabel("CPF/CNPJ: "));
@@ -75,19 +80,19 @@ public class Main {
                                     null);
                                 // delecaoCliente();
                                 break;
-                            case 2:
+                            case "[3] Deletar Cliente pelo nome":
                                 // Código para "Deletar Cliente pelo nome"
                                 break;
-                            case 3:
+                            case "[4] Cadastro de produtos":
                                 // Código para "Cadastro de produtos"
                                 break;
-                            case 4:
+                            case "[5] Efetuacao de uma compra":
                                 // Código para "Efetuação de uma compra"
                                 break;
-                            case 5:
+                            case "[6] Atualizacao da situacao de pagamentos de uma compra":
                                 // Código para "Atualização da situação de pagamentos de uma compra"
                                 break;
-                            case 6:
+                            case "[7] Relatorios":
                                 // Código para "Relatórios"
                                 break;
                         }
