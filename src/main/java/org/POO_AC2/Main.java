@@ -1,6 +1,10 @@
 package org.POO_AC2;
 
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
@@ -10,13 +14,18 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.POO_AC2.dominio.cliente.Cliente;
 import org.POO_AC2.dominio.cliente.Endereco;
 import org.POO_AC2.dominio.cliente.PF;
 import org.POO_AC2.dominio.cliente.PJ;
+import org.POO_AC2.dominio.produto.Pereciveis;
+import org.POO_AC2.dominio.produto.Produto;
+import org.POO_AC2.dominio.recursos.Json.Json;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import java.awt.GridLayout;
+import java.util.Iterator;
 
 public class Main {
 
@@ -66,25 +75,13 @@ public class Main {
                                 cadastroDoCliente();
                                 break;
                             case "[2] Deletar Cliente pelo CPF ou CNPJ":
-                                // Código para "Deletar Cliente pelo CPF ou CNPJ"
-                                JPanel delecaoClientePanel = new JPanel(new GridLayout(1, 1));
-                                delecaoClientePanel.add(new JLabel("CPF/CNPJ: "));
-                                JTextField cField = new JTextField();
-                                delecaoClientePanel.add(cField);
-                                int delecaoClientePagina = JOptionPane.showConfirmDialog(
-                                    null,
-                                    delecaoClientePanel,
-                                    "Deleção de Cliente",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.PLAIN_MESSAGE,
-                                    null);
-                                // delecaoCliente();
+                                delecaoClientePorChave();
                                 break;
                             case "[3] Deletar Cliente pelo nome":
-                                // Código para "Deletar Cliente pelo nome"
+                                delecaoClientePorNome();
                                 break;
                             case "[4] Cadastro de produtos":
-                                // Código para "Cadastro de produtos"
+                                cadastroProduto();
                                 break;
                             case "[5] Efetuacao de uma compra":
                                 // Código para "Efetuação de uma compra"
@@ -111,7 +108,13 @@ public class Main {
         } while (continuar);// tentativa de do while
     }
 
-    public static void cadastroDoCliente() {
+    public static void cadastroDoCliente() throws IOException {
+        File fileCliente = new File("Cliente.json");
+        ArrayList<Cliente> arrayCliente = new ArrayList<>();
+        if(!fileCliente.createNewFile()){
+             arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        }
+
 
         // opções do tipo de cadastro
         String[] tipoCliente = { "Pessoa Física", "Pessoa Jurídica" };
@@ -172,10 +175,6 @@ public class Main {
                             JTextField estadoField = new JTextField();
                             cadastroPFPanel.add(estadoField);
 
-                            cadastroPFPanel.add(new JLabel("Data de Cadastro:"));
-                            JTextField dataCadastroField = new JTextField();
-                            cadastroPFPanel.add(dataCadastroField);
-
                             cadastroPFPanel.add(new JLabel("CPF:"));
                             JTextField cpfField = new JTextField();
                             cadastroPFPanel.add(cpfField);
@@ -201,14 +200,14 @@ public class Main {
                                 String cidade = cidadeField.getText();
                                 String estado = estadoField.getText();
                                 Endereco endereco = new Endereco(rua, numero, bairro, cep, cidade, estado);
-                                String dataCadastro = dataCadastroField.getText();
                                 String cpf = cpfField.getText();
                                 int qntParcelasMax = Integer.parseInt(qntParcelasMaxField.getText());
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PF pf = new PF(nome, endereco, dataCadastro, cpf, qntParcelasMax);
+                                PF pf = new PF(nome, endereco, cpf, qntParcelasMax);
 
-                                // precisa salvar no json agora
+                                arrayCliente.add(pf);
+                                Json.writeAllData(arrayCliente,fileCliente);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Pessoa Física cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -247,10 +246,6 @@ public class Main {
                             JTextField estadoEmpresaField = new JTextField();
                             cadastroPJPanel.add(estadoEmpresaField);
 
-                            cadastroPJPanel.add(new JLabel("Data de Cadastro:"));
-                            JTextField dataCadastroEmpresaField = new JTextField();
-                            cadastroPJPanel.add(dataCadastroEmpresaField);
-
                             cadastroPJPanel.add(new JLabel("CNPJ:"));
                             JTextField cpfEmpresaField = new JTextField();
                             cadastroPJPanel.add(cpfEmpresaField);
@@ -279,16 +274,16 @@ public class Main {
                                 String cidade = cidadeEmpresaField.getText();
                                 String estado = estadoEmpresaField.getText();
                                 Endereco endereco = new Endereco(rua, numero, bairro, cep, cidade, estado);
-                                String dataCadastro = dataCadastroEmpresaField.getText();
                                 String cnpj = cpfEmpresaField.getText();
                                 String razaoSocial = razaoSocialField.getText();
                                 int qntParcelasMax = Integer.parseInt(qntParcelasMaxEmpresaField.getText());
 
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PJ pj = new PJ(nome, endereco, dataCadastro, cnpj, razaoSocial, qntParcelasMax);
+                                PJ pj = new PJ(nome, endereco,  cnpj, razaoSocial, qntParcelasMax);
 
-                                // precisa salvar no json agora
+                                arrayCliente.add(pj);
+                                Json.writeAllData(arrayCliente,fileCliente);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Pessoa Jurídica cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -304,6 +299,316 @@ public class Main {
         }
     }
 
-    public static void delecaoCliente(String codigo) {
+    public static void delecaoClientePorChave() throws IOException {
+        File fileCliente = new File("Cliente.json");
+        ArrayList<Cliente> arrayCliente = new ArrayList<>();
+        if(!fileCliente.createNewFile()){
+            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        }
+
+        // opções do tipo de cadastro
+        String[] tipoCliente = { "Pessoa Física", "Pessoa Jurídica" };
+        // JPanel para melhor exibição e UX.
+        JPanel tipoPanel = new JPanel(new GridLayout(tipoCliente.length, 1));
+        ButtonGroup tipoGroup = new ButtonGroup();
+        // criação dos botões de PF e PJ
+        for (String tipo : tipoCliente) {
+            JRadioButton tipoRadioButton = new JRadioButton(tipo);
+            tipoPanel.add(tipoRadioButton);
+            tipoGroup.add(tipoRadioButton);
+        }
+        // JOptionPane -> Tela de escolha do cliente
+        int tipoResultado = JOptionPane.showConfirmDialog(
+                null,
+                tipoPanel,
+                "Por favor, escolha o tipo de cliente:",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null);
+        if (tipoResultado == JOptionPane.OK_OPTION) {
+            Enumeration<AbstractButton> elements = tipoGroup.getElements();
+            int j = 0;
+            while (elements.hasMoreElements()) {
+                AbstractButton button = elements.nextElement();
+                if (button.isSelected()) {
+                    switch (j) {
+                        case 0:// caso pessoa física
+                            // cria o JPanel para exibição dos campos e coleta de dados.
+                            JPanel exclusaoPFPanel = new JPanel(new GridLayout(3, 2));
+
+                            // campos para dados da pessoa física
+                            exclusaoPFPanel.add(new JLabel("CPF:"));
+                            JTextField cpfField = new JTextField();
+                            exclusaoPFPanel.add(cpfField);
+
+
+                            // local de exibição com o JOptionPane
+                            int exclusaoPFResultado = JOptionPane.showConfirmDialog(
+                                    null,
+                                    exclusaoPFPanel,
+                                    "Cadastro de Pessoa Física",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE,
+                                    null);
+                            // se clicar em ok, os dados são coletados
+                            if (exclusaoPFResultado == JOptionPane.OK_OPTION) {
+                                String cpf = cpfField.getText();
+
+                                Iterator<Cliente> iterator = arrayCliente.iterator();
+                                while (iterator.hasNext()){
+                                    Object obj = iterator.next();
+                                    if(obj instanceof PF pf) {
+                                        if(pf.getCpf().compareTo(cpf) == 0) {
+                                            iterator.remove();
+                                        }
+                                    }
+                                }
+
+                                Json.writeAllData(arrayCliente, fileCliente);
+
+                            } else {// se não clicou em ok, cadastro é cancelado
+                                JOptionPane.showMessageDialog(null, "Exclusão de pessoa física cancelada.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                            }
+                            break;// fim do cadastro de pessoa física
+                        case 1:// começo cadastro pessoa jurídica
+                            // cria o JPanel para exibição dos campos e coleta de dados.
+                            JPanel exclusaoPJPanel = new JPanel(new GridLayout(10, 2));
+
+                            // campos para dados da pessoa física
+                            exclusaoPJPanel.add(new JLabel("CNPJ:"));
+                            JTextField cnpjField = new JTextField();
+                            exclusaoPJPanel.add(cnpjField);
+
+
+                            // local de exibição com o JOptionPane
+                            int exclusaoPJResultado = JOptionPane.showConfirmDialog(
+                                    null,
+                                    exclusaoPJPanel,
+                                    "Cadastro de Pessoa Física",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE,
+                                    null);
+                            // se clicar em ok, os dados são coletados
+                            if (exclusaoPJResultado == JOptionPane.OK_OPTION) {
+                                String cnpj = cnpjField.getText();
+                                Iterator<Cliente> iterator = arrayCliente.iterator();
+                                while (iterator.hasNext()){
+                                    Object obj = iterator.next();
+                                    if(obj instanceof PJ pj) {
+                                        if(pj.getCnpj().compareTo(cnpj) == 0) {
+                                            iterator.remove();
+                                        }
+                                    }
+                                }
+                                Json.writeAllData(arrayCliente, fileCliente);
+
+                            } else {// se não clicou em ok, cadastro é cancelado
+                                JOptionPane.showMessageDialog(null, "Exclusão de pessoa juridica cancelada.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                            }
+                    }
+                    break;
+                }
+                j++;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo,
+                    JOptionPane.WARNING_MESSAGE, null);
+        }
+
+    }
+
+    public static void delecaoClientePorNome() throws IOException {
+        File fileCliente = new File("Cliente.json");
+        ArrayList<Cliente> arrayCliente = new ArrayList<>();
+        if(!fileCliente.createNewFile()){
+            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        }
+
+
+        // cria o JPanel para exibição dos campos e coleta de dados.
+        JPanel exclusaoClientePanel = new JPanel(new GridLayout(3, 2));
+
+        // campos para dados do cliente
+        exclusaoClientePanel.add(new JLabel("Nome:"));
+        JTextField nomeField = new JTextField();
+        exclusaoClientePanel.add(nomeField);
+
+
+        // local de exibição com o JOptionPane
+        int exclusaoClienteResultado = JOptionPane.showConfirmDialog(
+                null,
+                exclusaoClientePanel,
+                "Cadastro de Pessoa Física",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null);
+        // se clicar em ok, os dados são coletados
+        if (exclusaoClienteResultado == JOptionPane.OK_OPTION) {
+            String nome = nomeField.getText();
+
+            arrayCliente.removeIf(cliente -> cliente.getNome().compareTo(nome) == 0);
+
+            Json.writeAllData(arrayCliente, fileCliente);
+
+        } else {// se não clicou em ok, é cancelado
+            JOptionPane.showMessageDialog(null, "Exclusão de cliente cancelada.", titulo,
+                    JOptionPane.WARNING_MESSAGE, null);
+        }
+
+    }
+
+    public static void cadastroProduto() throws IOException {
+        File fileProduto = new File("Produto.json");
+        ArrayList<Produto> arrayProduto = new ArrayList<>();
+        Long codigo;
+        if(!fileProduto.createNewFile() && fileProduto.length()>0){
+            arrayProduto.addAll(Json.readAllData(fileProduto,Produto.class));
+        }
+
+        if(!arrayProduto.isEmpty()) {
+            codigo = arrayProduto.get(arrayProduto.size() - 1).getCodigo() + 1;
+        }
+        else {
+            codigo = 1L;
+        }
+
+        // opções do tipo de cadastro
+        String[] tipoCliente = { "Produto comum", "Produto perecivel" };
+        // JPanel para melhor exibição e UX.
+        JPanel tipoPanel = new JPanel(new GridLayout(tipoCliente.length, 1));
+        ButtonGroup tipoGroup = new ButtonGroup();
+        // criação dos botões de PF e PJ
+        for (String tipo : tipoCliente) {
+            JRadioButton tipoRadioButton = new JRadioButton(tipo);
+            tipoPanel.add(tipoRadioButton);
+            tipoGroup.add(tipoRadioButton);
+        }
+        // JOptionPane -> Tela de escolha do cliente
+        int tipoResultado = JOptionPane.showConfirmDialog(
+                null,
+                tipoPanel,
+                "Por favor, escolha o tipo de produto:",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null);
+        if (tipoResultado == JOptionPane.OK_OPTION) {
+            Enumeration<AbstractButton> elements = tipoGroup.getElements();
+            int j = 0;
+            while (elements.hasMoreElements()) {
+                AbstractButton button = elements.nextElement();
+                if (button.isSelected()) {
+                    switch (j) {
+                        case 0:// caso Produto comum
+                            // cria o JPanel para exibição dos campos e coleta de dados.
+                            JPanel cadastroProdutoPanel = new JPanel(new GridLayout(10, 2));
+
+                            // campos para dados da pessoa física
+                            cadastroProdutoPanel.add(new JLabel("Codigo:"));
+                            JTextField codigoField = new JTextField();
+                            codigoField.setText(codigo.toString());
+                            cadastroProdutoPanel.add(codigoField);
+
+                            cadastroProdutoPanel.add(new JLabel("Nome:"));
+                            JTextField nomeField = new JTextField();
+                            cadastroProdutoPanel.add(nomeField);
+
+                            cadastroProdutoPanel.add(new JLabel("Descrição:"));
+                            JTextField descricaoField = new JTextField();
+                            cadastroProdutoPanel.add(descricaoField);
+
+                            cadastroProdutoPanel.add(new JLabel("Preço:"));
+                            JTextField precoField = new JTextField();
+                            cadastroProdutoPanel.add(precoField);
+
+
+                            // local de exibição com o JOptionPane
+                            int cadastroProdutoResultado = JOptionPane.showConfirmDialog(
+                                    null,
+                                    cadastroProdutoPanel,
+                                    "Cadastro de Produto",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE,
+                                    null);
+                            // se clicar em ok, os dados são coletados
+                            if (cadastroProdutoResultado == JOptionPane.OK_OPTION) {
+                                String nome = nomeField.getText();
+                                String descricao = descricaoField.getText();
+                                double preco = Double.parseDouble(precoField.getText().replace(",","."));
+
+                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado no
+                                // json
+                                Produto prod = new Produto(codigo,nome,descricao,preco);
+
+                                arrayProduto.add(prod);
+                                Json.writeAllData(arrayProduto,fileProduto);
+                            } else {// se não clicou em ok, cadastro é cancelado
+                                JOptionPane.showMessageDialog(null, "Cadastro de Produto cancelado.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                            }
+                            break;// fim do cadastro de produto
+                        case 1:/// caso Produto perecivel
+                            // cria o JPanel para exibição dos campos e coleta de dados.
+                            JPanel cadastroProdutoPerecivelPanel = new JPanel(new GridLayout(11, 2));
+
+                            // campos para dados da pessoa física
+                            cadastroProdutoPerecivelPanel.add(new JLabel("Codigo:"));
+                            JTextField codigoPerecivelField = new JTextField();
+                            codigoPerecivelField.setText(codigo.toString());
+                            cadastroProdutoPerecivelPanel.add(codigoPerecivelField);
+
+                            cadastroProdutoPerecivelPanel.add(new JLabel("Nome:"));
+                            JTextField nomePerecivelField = new JTextField();
+                            cadastroProdutoPerecivelPanel.add(nomePerecivelField);
+
+                            cadastroProdutoPerecivelPanel.add(new JLabel("Descrição:"));
+                            JTextField descricaoPerecivelField = new JTextField();
+                            cadastroProdutoPerecivelPanel.add(descricaoPerecivelField);
+
+                            cadastroProdutoPerecivelPanel.add(new JLabel("Preço:"));
+                            JTextField precoPerecivelField = new JTextField();
+                            cadastroProdutoPerecivelPanel.add(precoPerecivelField);
+
+                            cadastroProdutoPerecivelPanel.add(new JLabel("Data de validade:"));
+                            JTextField validadePerecivelField = new JTextField();
+                            cadastroProdutoPerecivelPanel.add(validadePerecivelField);
+
+
+                            // local de exibição com o JOptionPane
+                            int cadastroProdutoPerecivelResultado = JOptionPane.showConfirmDialog(
+                                    null,
+                                    cadastroProdutoPerecivelPanel,
+                                    "Cadastro de produto perecivel",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.PLAIN_MESSAGE,
+                                    null);
+                            // se clicar em ok, os dados são coletados
+                            if (cadastroProdutoPerecivelResultado == JOptionPane.OK_OPTION) {
+                                String nome = nomePerecivelField.getText();
+                                String descricao = descricaoPerecivelField.getText();
+                                double preco = Double.parseDouble(precoPerecivelField.getText().replace(",","."));
+                                String validade = validadePerecivelField.getText();
+
+                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado no
+                                // json
+                                Produto prod = new Pereciveis(codigo,nome,descricao,preco,validade);
+
+                                arrayProduto.add(prod);
+                                Json.writeAllData(arrayProduto,fileProduto);
+                            } else {// se não clicou em ok, cadastro é cancelado
+                                JOptionPane.showMessageDialog(null, "Cadastro de Produto perecivel cancelado.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                            }
+                            break;// fim do cadastro de produto
+                    }
+                    break;
+                }
+                j++;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo,
+                    JOptionPane.WARNING_MESSAGE, null);
+        }
     }
 }

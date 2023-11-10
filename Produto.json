@@ -1,0 +1,1 @@
+["java.util.ArrayList",[{"@class":"org.POO_AC2.dominio.produto.Produto","codigo":1,"nomeProduto":"Arrozinho","descricao":"Arroz do bom","preco":10.23},{"@class":"org.POO_AC2.dominio.produto.Pereciveis","codigo":2,"nomeProduto":"Feijão do bom","descricao":"feijãozinho","preco":11.43,"dataValidade":"10/11/2023"}]]

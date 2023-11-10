@@ -2,13 +2,16 @@ package org.POO_AC2.dominio.cliente;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @JsonTypeName("PF") // Define o tipo desta classe para que o jackson armazene no json
 public class PF extends Cliente {
     private String cpf;
     private int qntParcelasMax;
 
-    public PF(String nome, Endereco endereco, String dataCadastro, String cpf, int qntParcelasMax) {
-        super(nome, endereco, dataCadastro);
+    public PF(String nome, Endereco endereco, String cpf, int qntParcelasMax) {
+        super(nome, endereco, LocalDateTime.now().toString());
         this.cpf = cpf;
         this.qntParcelasMax = qntParcelasMax;
     }

@@ -5,14 +5,15 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 //classe dependente de Produto
 
 @JsonTypeName("Pereciveis") // Define o tipo desta classe para que o jackson armazene no json
 public class Pereciveis extends Produto {
-    private LocalDate dataValidade;
+    private String dataValidade;
 
-    public Pereciveis(Long codigo, String nomeProduto, String descricao, double preco, LocalDate dataValidade) {
+    public Pereciveis(Long codigo, String nomeProduto, String descricao, double preco, String dataValidade) {
         super(codigo, nomeProduto, descricao, preco);
         this.dataValidade = dataValidade;
     }
@@ -20,16 +21,16 @@ public class Pereciveis extends Produto {
     public Pereciveis() {
     }
 
-    public LocalDate getDataValidade(){
+    public String getDataValidade(){
         return dataValidade;
     }
-    public void setDataValidade(LocalDate data){
+    public void setDataValidade(String data){
         this.dataValidade = data;
     }
 
     //funções
     public boolean Vencido(){
-        return LocalDate.now().isAfter(dataValidade);
+        return LocalDate.now().isAfter(LocalDate.parse(dataValidade, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
     public String ParaString(){
