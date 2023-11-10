@@ -67,7 +67,7 @@ public class Main {
                     AbstractButton button = elements.nextElement();
         
                     if (button.isSelected()) {
-
+                        opcaoSelecionada = true; 
                         String buttonText = button.getText();
 
                         switch (buttonText) {
@@ -360,12 +360,18 @@ public class Main {
                                     if(obj instanceof PF pf) {
                                         if(pf.getCpf().compareTo(cpf) == 0) {
                                             iterator.remove();
+                                             Json.writeAllData(arrayCliente, fileCliente);
+                                             JOptionPane.showMessageDialog(null, "Exclusão de pessoa física efetuada com sucesso.", titulo,
+                                             JOptionPane.WARNING_MESSAGE, null);
+                                        }else{
+                                             JOptionPane.showMessageDialog(null, "Nenhum cliente com este CPF encontrado, favor verificar se os dados foram digitados corretamente.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                                        delecaoClientePorChave();
                                         }
                                     }
                                 }
 
-                                Json.writeAllData(arrayCliente, fileCliente);
-
+                               
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Exclusão de pessoa física cancelada.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -398,11 +404,17 @@ public class Main {
                                     if(obj instanceof PJ pj) {
                                         if(pj.getCnpj().compareTo(cnpj) == 0) {
                                             iterator.remove();
+                                             Json.writeAllData(arrayCliente, fileCliente);
+                                        JOptionPane.showMessageDialog(null, "Exclusão de pessoa jurídica efetuada com sucesso.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                                        }else{
+                                             JOptionPane.showMessageDialog(null, "Nenhum cliente com este CNPJ encontrado, favor verificar se os dados foram digitados corretamente.", titulo,
+                                        JOptionPane.WARNING_MESSAGE, null);
+                                        delecaoClientePorChave();
                                         }
                                     }
                                 }
-                                Json.writeAllData(arrayCliente, fileCliente);
-
+                               
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Exclusão de pessoa juridica cancelada.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
