@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = PJ.class, name = "PJ") // define que esta classe tem uma subclasse PJ
 })
 public abstract class Cliente {
+    private Long id;
     private String nome;
     private Endereco endereco;
     private String dataCadastro;
 
-    public Cliente(String nome, Endereco endereco, String dataCadastro) {
+    public Cliente(String nome, Endereco endereco, String dataCadastro, Long id) {
+        this.id = id;
         this.nome = nome;
         this.endereco = endereco;
         this.dataCadastro = dataCadastro;
@@ -42,6 +44,16 @@ public abstract class Cliente {
         this.dataCadastro = dataCadastro;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     //Chamada da função ParaString na classe abstrata.
     public abstract String ParaString();
+
+
 }

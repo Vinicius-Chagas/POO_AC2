@@ -1,30 +1,27 @@
 package org.POO_AC2;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
+import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+
+import javax.swing.*;
 
 import org.POO_AC2.dominio.cliente.Cliente;
 import org.POO_AC2.dominio.cliente.Endereco;
 import org.POO_AC2.dominio.cliente.PF;
 import org.POO_AC2.dominio.cliente.PJ;
+import org.POO_AC2.dominio.compra.Compra;
 import org.POO_AC2.dominio.produto.Pereciveis;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import java.awt.GridLayout;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Main {
@@ -84,7 +81,7 @@ public class Main {
                                 cadastroProduto();
                                 break;
                             case "[5] Efetuacao de uma compra":
-                                // Código para "Efetuação de uma compra"
+                                novaCompra();
                                 break;
                             case "[6] Atualizacao da situacao de pagamentos de uma compra":
                                 // Código para "Atualização da situação de pagamentos de uma compra"
@@ -115,6 +112,13 @@ public class Main {
              arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
         }
 
+        Long codigo;
+        if(!arrayCliente.isEmpty()) {
+            codigo = arrayCliente.get(arrayCliente.size() - 1).getId() + 1;
+        }
+        else {
+            codigo = 1L;
+        }
 
         // opções do tipo de cadastro
         String[] tipoCliente = { "Pessoa Física", "Pessoa Jurídica" };
@@ -204,7 +208,7 @@ public class Main {
                                 int qntParcelasMax = Integer.parseInt(qntParcelasMaxField.getText());
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PF pf = new PF(nome, endereco, cpf, qntParcelasMax);
+                                PF pf = new PF(nome, endereco, cpf, qntParcelasMax,codigo);
 
                                 arrayCliente.add(pf);
                                 Json.writeAllData(arrayCliente,fileCliente);
@@ -280,7 +284,7 @@ public class Main {
 
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PJ pj = new PJ(nome, endereco,  cnpj, razaoSocial, qntParcelasMax);
+                                PJ pj = new PJ(nome, endereco,  cnpj, razaoSocial, qntParcelasMax, codigo);
 
                                 arrayCliente.add(pj);
                                 Json.writeAllData(arrayCliente,fileCliente);
@@ -520,6 +524,8 @@ public class Main {
                             cadastroProdutoPanel.add(new JLabel("Codigo:"));
                             JTextField codigoField = new JTextField();
                             codigoField.setText(codigo.toString());
+                            codigoField.setEnabled(false);
+                            codigoField.setDisabledTextColor(Color.BLACK);
                             cadastroProdutoPanel.add(codigoField);
 
                             cadastroProdutoPanel.add(new JLabel("Nome:"));
@@ -622,5 +628,90 @@ public class Main {
             JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo,
                     JOptionPane.WARNING_MESSAGE, null);
         }
+    }
+
+    public static void novaCompra() throws IOException {
+
+        //Fazer método para substituir isso tudo.
+
+        File fileCompra = new File("Compras.json");
+        ArrayList<Compra> arrayCompra = new ArrayList<>();
+        File fileCliente = new File("Cliente.json");
+        ArrayList<Cliente> arrayCliente = new ArrayList<>();
+        File fileProduto = new File("Produto.json");
+        ArrayList<Produto> arrayProduto = new ArrayList<>();
+
+        if(!fileCompra.createNewFile() && fileCompra.length()>0){
+            arrayCompra.addAll(Json.readAllData(fileCompra,Compra.class));
+        }
+        if(!fileCliente.createNewFile() && fileCliente.length()>0){
+            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        }
+        if(!fileProduto.createNewFile() && fileProduto.length()>0){
+            arrayProduto.addAll(Json.readAllData(fileProduto,Produto.class));
+        }
+
+        long codigo;
+
+        if(!arrayCompra.isEmpty()) {
+            codigo = arrayCompra.get(arrayCompra.size() - 1).getId() + 1;
+        }
+        else {
+            codigo = 1L;
+        }
+
+        // cria o JPanel para exibição dos campos e coleta de dados.
+        JPanel cadastroDeCompra = new JPanel(new GridLayout(7, 2));
+
+        // campos para dados do cliente
+        cadastroDeCompra.add(new JLabel("Compra número:"));
+        JTextField idField = new JTextField(Long.toString(codigo));
+        idField.setEnabled(false);
+        idField.setDisabledTextColor(Color.BLACK);
+        cadastroDeCompra.add(idField);
+
+        cadastroDeCompra.add(new JLabel("Data da compra:"));
+        JTextField dataField = new JTextField(LocalDateTime.now().toString());
+        dataField.setEnabled(false);
+        dataField.setDisabledTextColor(Color.BLACK);
+        cadastroDeCompra.add(dataField);
+
+        cadastroDeCompra.add(new JLabel("Cliente:"));
+        String[] arrayStringClientes = arrayCliente.stream().map(c->
+                {
+                    String clientes = c.getId().toString() + " - " + c.getNome();
+                    return clientes;
+                }
+        ).toArray(String[]::new);
+        JComboBox<String> clienteCombobox = new JComboBox<>(arrayStringClientes);
+        cadastroDeCompra.add(clienteCombobox);
+
+        cadastroDeCompra.add(new JLabel("Itens da compra:"));
+
+        //Precisa fazer abrir uma caixinha com tudo isso dentro para que a pessoa possa selecionar todos os itens da compra que quiser
+        String[] arrayStringProdutos = arrayProduto.stream().map(c ->
+                {
+                    String produto = c.getCodigo() + " - " + c.getNomeProduto();
+                    return produto;
+                }
+        ).toArray(String[]::new);
+        JList itensList = new JList(arrayStringProdutos);
+        itensList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        itensList.setLayoutOrientation(JList.VERTICAL);
+        itensList.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(itensList);
+        listScroller.setPreferredSize(new Dimension(250,80));
+        cadastroDeCompra.add(listScroller);
+
+
+        // local de exibição com o JOptionPane
+        int exclusaoClienteResultado = JOptionPane.showConfirmDialog(
+                null,
+                cadastroDeCompra,
+                "Cadastro de Pessoa Física",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null);
+
     }
 }

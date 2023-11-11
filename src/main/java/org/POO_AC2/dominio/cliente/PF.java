@@ -10,8 +10,8 @@ public class PF extends Cliente {
     private String cpf;
     private int qntParcelasMax;
 
-    public PF(String nome, Endereco endereco, String cpf, int qntParcelasMax) {
-        super(nome, endereco, LocalDateTime.now().toString());
+    public PF(String nome, Endereco endereco, String cpf, int qntParcelasMax, Long id) {
+        super(nome, endereco, LocalDateTime.now().toString(), id);
         this.cpf = cpf;
         this.qntParcelasMax = qntParcelasMax;
     }

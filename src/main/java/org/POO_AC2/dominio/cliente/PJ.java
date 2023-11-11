@@ -12,8 +12,8 @@ public class PJ extends Cliente {
     private String razaoSocial;
     private int prazoMaximo;
 
-    public PJ(String nome, Endereco endereco, String cnpj, String razaoSocial, int prazoMaximo) {
-        super(nome, endereco, LocalDateTime.now().toString());
+    public PJ(String nome, Endereco endereco, String cnpj, String razaoSocial, int prazoMaximo, Long id) {
+        super(nome, endereco, LocalDateTime.now().toString(), id);
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.prazoMaximo = prazoMaximo;
