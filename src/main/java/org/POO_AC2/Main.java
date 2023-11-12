@@ -39,6 +39,7 @@ public class Main {
                     "[5] Efetuacao de uma compra",
                     "[6] Atualizacao da situacao de pagamentos de uma compra",
                     "[7] Relatorios",
+                    "[8] sair"
             };
             String mensagem = "Por favor, escolha uma opção:";
             // ImageIcon icone = new ImageIcon("assets\\menu.jfif"); //icone ficou muito
@@ -89,6 +90,9 @@ public class Main {
                             case "[7] Relatorios":
                                 // Código para "Relatórios"
                                 break;
+                            case "[8] sair":
+                            System.exit(0);
+                            break;
                         }
                         break;
                     }
@@ -629,10 +633,7 @@ public class Main {
                     JOptionPane.WARNING_MESSAGE, null);
         }
     }
-
     public static void novaCompra() throws IOException {
-
-        //Fazer método para substituir isso tudo.
 
         File fileCompra = new File("Compras.json");
         ArrayList<Compra> arrayCompra = new ArrayList<>();
@@ -640,71 +641,54 @@ public class Main {
         ArrayList<Cliente> arrayCliente = new ArrayList<>();
         File fileProduto = new File("Produto.json");
         ArrayList<Produto> arrayProduto = new ArrayList<>();
-
-        if(!fileCompra.createNewFile() && fileCompra.length()>0){
-            arrayCompra.addAll(Json.readAllData(fileCompra,Compra.class));
+    
+        if (!fileCompra.createNewFile() && fileCompra.length() > 0) {
+            arrayCompra.addAll(Json.readAllData(fileCompra, Compra.class));
         }
-        if(!fileCliente.createNewFile() && fileCliente.length()>0){
-            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        if (!fileCliente.createNewFile() && fileCliente.length() > 0) {
+            arrayCliente.addAll(Json.readAllData(fileCliente, Cliente.class));
         }
-        if(!fileProduto.createNewFile() && fileProduto.length()>0){
-            arrayProduto.addAll(Json.readAllData(fileProduto,Produto.class));
+        if (!fileProduto.createNewFile() && fileProduto.length() > 0) {
+            arrayProduto.addAll(Json.readAllData(fileProduto, Produto.class));
         }
-
+    
         long codigo;
-
-        if(!arrayCompra.isEmpty()) {
+    
+        if (!arrayCompra.isEmpty()) {
             codigo = arrayCompra.get(arrayCompra.size() - 1).getId() + 1;
-        }
-        else {
+        } else {
             codigo = 1L;
         }
-
-        // cria o JPanel para exibição dos campos e coleta de dados.
+    
         JPanel cadastroDeCompra = new JPanel(new GridLayout(7, 2));
-
-        // campos para dados do cliente
+    
         cadastroDeCompra.add(new JLabel("Compra número:"));
         JTextField idField = new JTextField(Long.toString(codigo));
         idField.setEnabled(false);
         idField.setDisabledTextColor(Color.BLACK);
         cadastroDeCompra.add(idField);
-
+    
         cadastroDeCompra.add(new JLabel("Data da compra:"));
         JTextField dataField = new JTextField(LocalDateTime.now().toString());
         dataField.setEnabled(false);
         dataField.setDisabledTextColor(Color.BLACK);
         cadastroDeCompra.add(dataField);
-
+    
         cadastroDeCompra.add(new JLabel("Cliente:"));
-        String[] arrayStringClientes = arrayCliente.stream().map(c->
-                {
-                    String clientes = c.getId().toString() + " - " + c.getNome();
-                    return clientes;
-                }
+        String[] arrayStringClientes = arrayCliente.stream().map(c ->
+                c.getId().toString() + " - " + c.getNome()
         ).toArray(String[]::new);
         JComboBox<String> clienteCombobox = new JComboBox<>(arrayStringClientes);
         cadastroDeCompra.add(clienteCombobox);
-
+    
         cadastroDeCompra.add(new JLabel("Itens da compra:"));
-
-        //Precisa fazer abrir uma caixinha com tudo isso dentro para que a pessoa possa selecionar todos os itens da compra que quiser
-        String[] arrayStringProdutos = arrayProduto.stream().map(c ->
-                {
-                    String produto = c.getCodigo() + " - " + c.getNomeProduto();
-                    return produto;
-                }
-        ).toArray(String[]::new);
-        JList itensList = new JList(arrayStringProdutos);
-        itensList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        itensList.setLayoutOrientation(JList.VERTICAL);
-        itensList.setVisibleRowCount(-1);
-        JScrollPane listScroller = new JScrollPane(itensList);
-        listScroller.setPreferredSize(new Dimension(250,80));
-        cadastroDeCompra.add(listScroller);
-
-
-        // local de exibição com o JOptionPane
+        JButton selectItemsButton = new JButton("Selecionar Itens");
+        cadastroDeCompra.add(selectItemsButton);
+    
+        selectItemsButton.addActionListener(e -> {
+            selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
+        });
+    
         int exclusaoClienteResultado = JOptionPane.showConfirmDialog(
                 null,
                 cadastroDeCompra,
@@ -712,6 +696,48 @@ public class Main {
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null);
-
+    
     }
+    
+    private static void selectItemsAndQuantity(ArrayList<Produto> produtos, JComponent parentComponent) {
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), "Seleção de Produtos", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setLayout(new BorderLayout());
+    
+        String[] arrayStringProdutos = produtos.stream().map(c ->
+                c.getCodigo() + " - " + c.getNomeProduto()
+        ).toArray(String[]::new);
+        JList<String> itensList = new JList<>(arrayStringProdutos);
+        itensList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane listScroller = new JScrollPane(itensList);
+        dialog.add(listScroller, BorderLayout.CENTER);
+    
+        JPanel quantityPanel = new JPanel(new GridLayout(2, 2));
+        quantityPanel.add(new JLabel("Quantidade:"));
+        JTextField quantityField = new JTextField();
+        quantityPanel.add(quantityField);
+    
+        JButton confirmButton = new JButton("Confirmar");
+        confirmButton.addActionListener(confirmEvent -> {
+            int[] selectedIndices = itensList.getSelectedIndices();
+            for (int index : selectedIndices) {
+                Produto selectedProduto = produtos.get(index);
+                int quantity = Integer.parseInt(quantityField.getText());
+                // Do something with the selected product and quantity (e.g., store in the purchase)
+                // ...
+    
+                // Optionally, you can display a message to the user or perform additional actions
+                JOptionPane.showMessageDialog(null, "Produto selecionado: " + selectedProduto.getNomeProduto() +
+                        "\nQuantidade: " + quantity, "Seleção de Produtos", JOptionPane.INFORMATION_MESSAGE);
+            }
+            dialog.dispose();
+        });
+        quantityPanel.add(confirmButton);
+    
+        dialog.add(quantityPanel, BorderLayout.SOUTH);
+    
+        dialog.setSize(300, 200);
+        dialog.setLocationRelativeTo(parentComponent);
+        dialog.setVisible(true);
+    }
+    
 }

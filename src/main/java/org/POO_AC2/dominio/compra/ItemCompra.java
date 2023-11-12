@@ -1,5 +1,7 @@
 package org.POO_AC2.dominio.compra;
 
+import org.POO_AC2.dominio.produto.Produto;
+
 public class ItemCompra {
     private int qtde;
     private Long codigoProduto;
@@ -14,6 +16,9 @@ public class ItemCompra {
     }
 
     public ItemCompra() {
+    }
+
+    public ItemCompra(Produto selectedProduto, int quantidade) {
     }
 
     public int getQtde(){
