@@ -4,10 +4,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 
 
 import javax.swing.*;
@@ -17,12 +15,13 @@ import org.POO_AC2.dominio.cliente.Endereco;
 import org.POO_AC2.dominio.cliente.PF;
 import org.POO_AC2.dominio.cliente.PJ;
 import org.POO_AC2.dominio.compra.Compra;
+import org.POO_AC2.dominio.compra.ItemCompra;
 import org.POO_AC2.dominio.produto.Pereciveis;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
 
@@ -85,7 +84,7 @@ public class Main {
                                 novaCompra();
                                 break;
                             case "[6] Atualizacao da situacao de pagamentos de uma compra":
-                                // Código para "Atualização da situação de pagamentos de uma compra"
+                                atualizarPagamentoCompra();
                                 break;
                             case "[7] Relatorios":
                                 // Código para "Relatórios"
@@ -684,33 +683,60 @@ public class Main {
         cadastroDeCompra.add(new JLabel("Itens da compra:"));
         JButton selectItemsButton = new JButton("Selecionar Itens");
         cadastroDeCompra.add(selectItemsButton);
+
+        ArrayList<ItemCompra> arrayItemsCompra = new ArrayList<>();
+
     
         selectItemsButton.addActionListener(e -> {
-            selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
+            try {
+                arrayItemsCompra.add(selectItemsAndQuantity(arrayProduto, cadastroDeCompra));
+                System.out.println(arrayItemsCompra.toString());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
-    
-        int exclusaoClienteResultado = JOptionPane.showConfirmDialog(
+
+        cadastroDeCompra.add(new JLabel("Parcelas totais:"));
+        JTextField parcelasField = new JTextField();
+        cadastroDeCompra.add(parcelasField);
+
+
+        //Dá exception quando não digita quantidade e clicka em OK, mas não encerra o app
+        int SelecaoDeItensResultado = JOptionPane.showConfirmDialog(
                 null,
                 cadastroDeCompra,
-                "Cadastro de Pessoa Física",
+                "Seleção de itens",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null);
+
+        String[] s = arrayStringClientes[clienteCombobox.getSelectedIndex()].split("-");
+        Long idCliente = Long.parseLong(s[0].trim());
+        String dataCompra = dataField.getText();
+
+
+        //Tem que fazer verificação de se o número de parcelas digitado não é maior que o número de parcelas liberado para o cliente
+        Compra c = new Compra(dataCompra,codigo, idCliente,arrayItemsCompra,Integer.parseInt(parcelasField.getText()));
+        arrayCompra.add(c);
+        Json.writeAllData(arrayCompra,fileCompra);
+
     
     }
     
-    private static void selectItemsAndQuantity(ArrayList<Produto> produtos, JComponent parentComponent) {
+    private static ItemCompra selectItemsAndQuantity(ArrayList<Produto> produtos, JComponent parentComponent) throws IOException {
         JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), "Seleção de Produtos", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setLayout(new BorderLayout());
+
+        AtomicReference<Long> id = null;
     
         String[] arrayStringProdutos = produtos.stream().map(c ->
                 c.getCodigo() + " - " + c.getNomeProduto()
         ).toArray(String[]::new);
         JList<String> itensList = new JList<>(arrayStringProdutos);
-        itensList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        itensList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScroller = new JScrollPane(itensList);
         dialog.add(listScroller, BorderLayout.CENTER);
-    
+
         JPanel quantityPanel = new JPanel(new GridLayout(2, 2));
         quantityPanel.add(new JLabel("Quantidade:"));
         JTextField quantityField = new JTextField();
@@ -738,6 +764,42 @@ public class Main {
         dialog.setSize(300, 200);
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
+        String[] s = itensList.getSelectedValue().split("-");
+
+        return new ItemCompra(Integer.parseInt(quantityField.getText()), Long.parseLong(s[0].trim()));
     }
+
+    public static void atualizarPagamentoCompra() throws IOException {
+
+        File fileCompra = new File("Compras.json");
+        ArrayList<Compra> arrayCompra = new ArrayList<>();
+
+        if (!fileCompra.createNewFile() && fileCompra.length() > 0) {
+            arrayCompra.addAll(Json.readAllData(fileCompra, Compra.class));
+        }
+
+        JPanel pagementoPanel = new JPanel(new GridLayout(3, 2));
+
+        // campos para dados da pessoa física
+        pagementoPanel.add(new JLabel("Codigo da compra:"));
+        JTextField codigoField = new JTextField();
+        pagementoPanel.add(codigoField);
+
+
+        // local de exibição com o JOptionPane
+        int exclusaoPFResultado = JOptionPane.showConfirmDialog(
+                null,
+                pagementoPanel,
+                "Pagamento de parcela",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null);
+        // se clicar em ok, os dados são coletados
+        if (exclusaoPFResultado == JOptionPane.OK_OPTION) {
+            String cpf = codigoField.getText();
+        }
+
+    }
+
     
 }

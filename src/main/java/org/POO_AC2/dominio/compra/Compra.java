@@ -2,37 +2,39 @@ package org.POO_AC2.dominio.compra;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.POO_AC2.dominio.cliente.Cliente;
-import org.POO_AC2.dominio.cliente.PF;
-import org.POO_AC2.dominio.cliente.PJ;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type") // Notação Json que define como o tipo da classe deve ser armazenado no json
+
 public class Compra {
     private Long Id;
-    private LocalDate dataCompra;
+    private String dataCompra;
     private Double valorTotal;
     private Cliente cliente;
+
     private ArrayList<ItemCompra> itensCompra;
     private int parcelasTotais;
     private int parcelasPagas;
 
     private String ultimoPagamento;
 
-    public Compra(LocalDate dataCompra, Double valorTotal, Long id, ArrayList<ItemCompra> itensCompra, int parcelasPagas, int parcelasTotais, String ultimoPagamento) throws IOException {
+    public Compra(String dataCompra,Long codigo,  Long idCliente, ArrayList<ItemCompra> itensCompra, int parcelasTotais) throws IOException {
         this.dataCompra = dataCompra;
-        this.valorTotal = valorTotal;
-        this.cliente = procurarCliente(id); // procura o cliente pelo ID passado e o retorna para inicializar a compra.
+        this.valorTotal = valorTotal((ArrayList<ItemCompra>) itensCompra);
+        this.cliente = procurarCliente(idCliente); // procura o cliente pelo ID passado e o retorna para inicializar a compra.
         this.itensCompra = itensCompra;
-        this.parcelasPagas = parcelasPagas;
+        this.parcelasPagas = 0;
         this.parcelasTotais = parcelasTotais;
-        this.ultimoPagamento = ultimoPagamento;
+        this.ultimoPagamento = null;
+        this.Id = codigo;
     }
 
     public Compra() {
@@ -46,11 +48,11 @@ public class Compra {
         Id = id;
     }
 
-    public LocalDate getDataCompra() {
+    public String getDataCompra() {
         return dataCompra;
     }
 
-    public void setDataCompra(LocalDate dataCompra) {
+    public void setDataCompra(String dataCompra) {
         this.dataCompra = dataCompra;
     }
 
@@ -70,7 +72,7 @@ public class Compra {
         this.cliente = cliente;
     }
 
-    public ArrayList<ItemCompra> getItensCompra() {
+    public List<ItemCompra> getItensCompra() {
         return itensCompra;
     }
 
@@ -123,5 +125,14 @@ public class Compra {
         }
 
         return cliente;
+    }
+
+    public double valorTotal(ArrayList<ItemCompra> itensCompra){
+        double total = 0;
+        for (ItemCompra i: itensCompra) {
+            total += i.getValorTotal();
+        }
+
+        return total;
     }
 }

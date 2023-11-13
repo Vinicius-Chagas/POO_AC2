@@ -162,16 +162,17 @@ public class Relatorios {
         try {
             ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
             HashMap<Integer,Double> meses = new HashMap<Integer, Double>(); // Cria um hashmap chave <Mês, valor>
-
+            int month = 0;
             for (Compra c:arrayCompras){
-                if(meses.containsKey(c.getDataCompra().getMonthValue())){ // Verifica se o mes lido já existe no hashmap
+                month = LocalDate.parse(c.getDataCompra()).getMonthValue();
+                if(meses.containsKey(LocalDate.parse(c.getDataCompra()).getMonthValue())){ // Verifica se o mes lido já existe no hashmap
                     //Soma o valor da compra ao valor do mês correspondente
-                    meses.put(c.getDataCompra().getMonthValue(), meses.get(c.getDataCompra().getMonthValue()) +c.getValorTotal());
+                    meses.put(month, meses.get(month) + c.getValorTotal());
                 }
                 else {
-                    meses.get(c.getDataCompra().getMonthValue()); //Adiciona o mês ao hashmap
+                    meses.get(month); //Adiciona o mês ao hashmap
                     //Soma o valor da compra ao valor do mês correspondente
-                    meses.put(c.getDataCompra().getMonthValue(), meses.get(c.getDataCompra().getMonthValue()) +c.getValorTotal());
+                    meses.put(month, meses.get(month) +c.getValorTotal());
                 }
             }
 

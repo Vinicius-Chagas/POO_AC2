@@ -39,7 +39,6 @@ public class Json {
     public static void stringfy(Object a) throws JsonProcessingException { // Printa um objeto como string
         ObjectWriter objectWriter = objectMapper.writer();
         objectWriter = objectWriter.with(SerializationFeature.INDENT_OUTPUT);
-
         System.out.println(objectWriter.writeValueAsString(a));
     }
 
