@@ -88,7 +88,7 @@ public class Main {
                                 atualizarPagamentoCompra();
                                 break;
                             case "[7] Relatorios":
-                                // Código para "Relatórios"
+                                menuRelatorios();
                                 break;
                             case "[8] sair":
                             System.exit(0);
@@ -927,8 +927,98 @@ public class Main {
             }
         }
     }
+    public static void menuRelatorios() {
+        boolean continuar = true;
+        do {
+            String[] opcoes = {
+                    "[a] Relação de todos os Clientes que possuem o nome iniciado por uma determinada sequência de caracteres;",
+                    "[b] Relação de todos os Produtos;",
+                    "[c] Busca de um produto pelo nome;",
+                    "[d] Relação de produtos que são perecíveis e que estão com a data de validade vencida;",
+                    "[e] Relação de todas as compras;",
+                    "[f] Busca de uma compra pelo número;",
+                    "[g] Relação de todas as compras que não foram pagas ainda;",
+                    "[h] Relação das 10 últimas compras pagas;",
+                    "[i] Apresentação das informações da compra mais cara;",
+                    "[j] Apresentação das informações da compra mais barata;",
+                    "[k] Relação do valor total de compras feitas em cada mês nos últimos 12 meses.",
+                    "[0] Voltar para o menu principal"
+            };
+            String mensagem = "Por favor, escolha uma opção:";
+            JPanel panel = new JPanel(new GridLayout(opcoes.length, 1));
+            ButtonGroup group = new ButtonGroup();
     
+            for (String opcao : opcoes) {
+                JRadioButton radioButton = new JRadioButton(opcao);
+                panel.add(radioButton);
+                group.add(radioButton);
+            }
     
-
+            int resultado = JOptionPane.showConfirmDialog(null, panel, mensagem, JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE, null);
+    
+            if (resultado == JOptionPane.OK_OPTION) {
+                boolean opcaoSelecionada = false;
+                Enumeration<AbstractButton> elements = group.getElements();
+                while (elements.hasMoreElements()) {
+                    AbstractButton button = elements.nextElement();
+    
+                    if (button.isSelected()) {
+                        opcaoSelecionada = true;
+                        String buttonText = button.getText();
+    
+                        switch (buttonText.charAt(1)) {
+                            case 'a':
+                                // Implementação para a opção (a)
+                                break;
+                            case 'b':
+                                // Implementação para a opção (b)
+                                break;
+                            case 'c':
+                                // Implementação para a opção (c)
+                                break;
+                            case 'd':
+                                // Implementação para a opção (d)
+                                break;
+                            case 'e':
+                                // Implementação para a opção (e)
+                                break;
+                            case 'f':
+                                // Implementação para a opção (f)
+                                break;
+                            case 'g':
+                                // Implementação para a opção (g)
+                                break;
+                            case 'h':
+                                // Implementação para a opção (h)
+                                break;
+                            case 'i':
+                                // Implementação para a opção (i)
+                                break;
+                            case 'j':
+                                // Implementação para a opção (j)
+                                break;
+                            case 'k':
+                                // Implementação para a opção (k)
+                                break;
+                            case '0':
+                                // Voltar para o menu principal
+                                return;
+                        }
+                        break;
+                    }
+                }
+                if (!opcaoSelecionada) {
+                    JOptionPane.showMessageDialog(null, "Nenhuma opção selecionada. Se quiser sair, selecione o botão Cancelar.",
+                            titulo, JOptionPane.WARNING_MESSAGE, null);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Você escolheu retornar ao menu principal.", titulo,
+                        JOptionPane.WARNING_MESSAGE, null);
+                continuar = false;
+            }
+        } while (continuar);
+    }
+    
     
 }
