@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-
 import javax.swing.*;
 
 import org.POO_AC2.dominio.cliente.Cliente;
@@ -19,11 +18,13 @@ import org.POO_AC2.dominio.compra.ItemCompra;
 import org.POO_AC2.dominio.produto.Pereciveis;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
+import org.POO_AC2.dominio.recursos.relatorios.Relatorios;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-    import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Main {
 
     static String titulo = "Organizacoes Tabajara";
@@ -63,9 +64,9 @@ public class Main {
                 Enumeration<AbstractButton> elements = group.getElements();
                 while (elements.hasMoreElements()) {
                     AbstractButton button = elements.nextElement();
-        
+
                     if (button.isSelected()) {
-                        opcaoSelecionada = true; 
+                        opcaoSelecionada = true;
                         String buttonText = button.getText();
 
                         switch (buttonText) {
@@ -91,14 +92,15 @@ public class Main {
                                 menuRelatorios();
                                 break;
                             case "[8] sair":
-                            System.exit(0);
-                            break;
+                                System.exit(0);
+                                break;
                         }
                         break;
                     }
                 }
                 if (!opcaoSelecionada) {
-                    JOptionPane.showMessageDialog(null, "Nenhuma opção selecionada. Se quiser sair, selecione o botão Cancelar.", titulo,
+                    JOptionPane.showMessageDialog(null,
+                            "Nenhuma opção selecionada. Se quiser sair, selecione o botão Cancelar.", titulo,
                             JOptionPane.WARNING_MESSAGE, null);
                 }
             } else {
@@ -112,15 +114,14 @@ public class Main {
     public static void cadastroDoCliente() throws IOException {
         File fileCliente = new File("Cliente.json");
         ArrayList<Cliente> arrayCliente = new ArrayList<>();
-        if(!fileCliente.createNewFile()){
-             arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        if (!fileCliente.createNewFile()) {
+            arrayCliente.addAll(Json.readAllData(fileCliente, Cliente.class));
         }
 
         Long codigo;
-        if(!arrayCliente.isEmpty()) {
+        if (!arrayCliente.isEmpty()) {
             codigo = arrayCliente.get(arrayCliente.size() - 1).getId() + 1;
-        }
-        else {
+        } else {
             codigo = 1L;
         }
 
@@ -212,10 +213,10 @@ public class Main {
                                 int qntParcelasMax = Integer.parseInt(qntParcelasMaxField.getText());
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PF pf = new PF(nome, endereco, cpf, qntParcelasMax,codigo);
+                                PF pf = new PF(nome, endereco, cpf, qntParcelasMax, codigo);
 
                                 arrayCliente.add(pf);
-                                Json.writeAllData(arrayCliente,fileCliente);
+                                Json.writeAllData(arrayCliente, fileCliente);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Pessoa Física cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -288,10 +289,10 @@ public class Main {
 
                                 // com os dados coletados, cria um novo pf, que agora pode ser adicionado no
                                 // json
-                                PJ pj = new PJ(nome, endereco,  cnpj, razaoSocial, qntParcelasMax, codigo);
+                                PJ pj = new PJ(nome, endereco, cnpj, razaoSocial, qntParcelasMax, codigo);
 
                                 arrayCliente.add(pj);
-                                Json.writeAllData(arrayCliente,fileCliente);
+                                Json.writeAllData(arrayCliente, fileCliente);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Pessoa Jurídica cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -310,8 +311,8 @@ public class Main {
     public static void delecaoClientePorChave() throws IOException {
         File fileCliente = new File("Cliente.json");
         ArrayList<Cliente> arrayCliente = new ArrayList<>();
-        if(!fileCliente.createNewFile()){
-            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        if (!fileCliente.createNewFile()) {
+            arrayCliente.addAll(Json.readAllData(fileCliente, Cliente.class));
         }
 
         // opções do tipo de cadastro
@@ -341,14 +342,13 @@ public class Main {
                 if (button.isSelected()) {
                     switch (j) {
                         case 0:// caso pessoa física
-                            // cria o JPanel para exibição dos campos e coleta de dados.
+                               // cria o JPanel para exibição dos campos e coleta de dados.
                             JPanel exclusaoPFPanel = new JPanel(new GridLayout(3, 2));
 
                             // campos para dados da pessoa física
                             exclusaoPFPanel.add(new JLabel("CPF:"));
                             JTextField cpfField = new JTextField();
                             exclusaoPFPanel.add(cpfField);
-
 
                             // local de exibição com o JOptionPane
                             int exclusaoPFResultado = JOptionPane.showConfirmDialog(
@@ -363,37 +363,38 @@ public class Main {
                                 String cpf = cpfField.getText();
 
                                 Iterator<Cliente> iterator = arrayCliente.iterator();
-                                while (iterator.hasNext()){
+                                while (iterator.hasNext()) {
                                     Object obj = iterator.next();
-                                    if(obj instanceof PF pf) {
-                                        if(pf.getCpf().compareTo(cpf) == 0) {
+                                    if (obj instanceof PF pf) {
+                                        if (pf.getCpf().compareTo(cpf) == 0) {
                                             iterator.remove();
-                                             Json.writeAllData(arrayCliente, fileCliente);
-                                             JOptionPane.showMessageDialog(null, "Exclusão de pessoa física efetuada com sucesso.", titulo,
-                                             JOptionPane.WARNING_MESSAGE, null);
-                                        }else{
-                                             JOptionPane.showMessageDialog(null, "Nenhum cliente com este CPF encontrado, favor verificar se os dados foram digitados corretamente.", titulo,
-                                        JOptionPane.WARNING_MESSAGE, null);
-                                        delecaoClientePorChave();
+                                            Json.writeAllData(arrayCliente, fileCliente);
+                                            JOptionPane.showMessageDialog(null,
+                                                    "Exclusão de pessoa física efetuada com sucesso.", titulo,
+                                                    JOptionPane.WARNING_MESSAGE, null);
+                                        } else {
+                                            JOptionPane.showMessageDialog(null,
+                                                    "Nenhum cliente com este CPF encontrado, favor verificar se os dados foram digitados corretamente.",
+                                                    titulo,
+                                                    JOptionPane.WARNING_MESSAGE, null);
+                                            delecaoClientePorChave();
                                         }
                                     }
                                 }
 
-                               
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Exclusão de pessoa física cancelada.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
                             }
                             break;// fim do cadastro de pessoa física
                         case 1:// começo cadastro pessoa jurídica
-                            // cria o JPanel para exibição dos campos e coleta de dados.
+                               // cria o JPanel para exibição dos campos e coleta de dados.
                             JPanel exclusaoPJPanel = new JPanel(new GridLayout(10, 2));
 
                             // campos para dados da pessoa física
                             exclusaoPJPanel.add(new JLabel("CNPJ:"));
                             JTextField cnpjField = new JTextField();
                             exclusaoPJPanel.add(cnpjField);
-
 
                             // local de exibição com o JOptionPane
                             int exclusaoPJResultado = JOptionPane.showConfirmDialog(
@@ -407,22 +408,25 @@ public class Main {
                             if (exclusaoPJResultado == JOptionPane.OK_OPTION) {
                                 String cnpj = cnpjField.getText();
                                 Iterator<Cliente> iterator = arrayCliente.iterator();
-                                while (iterator.hasNext()){
+                                while (iterator.hasNext()) {
                                     Object obj = iterator.next();
-                                    if(obj instanceof PJ pj) {
-                                        if(pj.getCnpj().compareTo(cnpj) == 0) {
+                                    if (obj instanceof PJ pj) {
+                                        if (pj.getCnpj().compareTo(cnpj) == 0) {
                                             iterator.remove();
-                                             Json.writeAllData(arrayCliente, fileCliente);
-                                        JOptionPane.showMessageDialog(null, "Exclusão de pessoa jurídica efetuada com sucesso.", titulo,
-                                        JOptionPane.WARNING_MESSAGE, null);
-                                        }else{
-                                             JOptionPane.showMessageDialog(null, "Nenhum cliente com este CNPJ encontrado, favor verificar se os dados foram digitados corretamente.", titulo,
-                                        JOptionPane.WARNING_MESSAGE, null);
-                                        delecaoClientePorChave();
+                                            Json.writeAllData(arrayCliente, fileCliente);
+                                            JOptionPane.showMessageDialog(null,
+                                                    "Exclusão de pessoa jurídica efetuada com sucesso.", titulo,
+                                                    JOptionPane.WARNING_MESSAGE, null);
+                                        } else {
+                                            JOptionPane.showMessageDialog(null,
+                                                    "Nenhum cliente com este CNPJ encontrado, favor verificar se os dados foram digitados corretamente.",
+                                                    titulo,
+                                                    JOptionPane.WARNING_MESSAGE, null);
+                                            delecaoClientePorChave();
                                         }
                                     }
                                 }
-                               
+
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Exclusão de pessoa juridica cancelada.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -442,10 +446,9 @@ public class Main {
     public static void delecaoClientePorNome() throws IOException {
         File fileCliente = new File("Cliente.json");
         ArrayList<Cliente> arrayCliente = new ArrayList<>();
-        if(!fileCliente.createNewFile()){
-            arrayCliente.addAll(Json.readAllData(fileCliente,Cliente.class));
+        if (!fileCliente.createNewFile()) {
+            arrayCliente.addAll(Json.readAllData(fileCliente, Cliente.class));
         }
-
 
         // cria o JPanel para exibição dos campos e coleta de dados.
         JPanel exclusaoClientePanel = new JPanel(new GridLayout(3, 2));
@@ -454,7 +457,6 @@ public class Main {
         exclusaoClientePanel.add(new JLabel("Nome:"));
         JTextField nomeField = new JTextField();
         exclusaoClientePanel.add(nomeField);
-
 
         // local de exibição com o JOptionPane
         int exclusaoClienteResultado = JOptionPane.showConfirmDialog(
@@ -483,14 +485,13 @@ public class Main {
         File fileProduto = new File("Produto.json");
         ArrayList<Produto> arrayProduto = new ArrayList<>();
         Long codigo;
-        if(!fileProduto.createNewFile() && fileProduto.length()>0){
-            arrayProduto.addAll(Json.readAllData(fileProduto,Produto.class));
+        if (!fileProduto.createNewFile() && fileProduto.length() > 0) {
+            arrayProduto.addAll(Json.readAllData(fileProduto, Produto.class));
         }
 
-        if(!arrayProduto.isEmpty()) {
+        if (!arrayProduto.isEmpty()) {
             codigo = arrayProduto.get(arrayProduto.size() - 1).getCodigo() + 1;
-        }
-        else {
+        } else {
             codigo = 1L;
         }
 
@@ -521,7 +522,7 @@ public class Main {
                 if (button.isSelected()) {
                     switch (j) {
                         case 0:// caso Produto comum
-                            // cria o JPanel para exibição dos campos e coleta de dados.
+                               // cria o JPanel para exibição dos campos e coleta de dados.
                             JPanel cadastroProdutoPanel = new JPanel(new GridLayout(10, 2));
 
                             // campos para dados da pessoa física
@@ -544,7 +545,6 @@ public class Main {
                             JTextField precoField = new JTextField();
                             cadastroProdutoPanel.add(precoField);
 
-
                             // local de exibição com o JOptionPane
                             int cadastroProdutoResultado = JOptionPane.showConfirmDialog(
                                     null,
@@ -557,21 +557,22 @@ public class Main {
                             if (cadastroProdutoResultado == JOptionPane.OK_OPTION) {
                                 String nome = nomeField.getText();
                                 String descricao = descricaoField.getText();
-                                double preco = Double.parseDouble(precoField.getText().replace(",","."));
+                                double preco = Double.parseDouble(precoField.getText().replace(",", "."));
 
-                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado no
+                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado
+                                // no
                                 // json
-                                Produto prod = new Produto(codigo,nome,descricao,preco);
+                                Produto prod = new Produto(codigo, nome, descricao, preco);
 
                                 arrayProduto.add(prod);
-                                Json.writeAllData(arrayProduto,fileProduto);
+                                Json.writeAllData(arrayProduto, fileProduto);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Produto cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
                             }
                             break;// fim do cadastro de produto
                         case 1:/// caso Produto perecivel
-                            // cria o JPanel para exibição dos campos e coleta de dados.
+                               // cria o JPanel para exibição dos campos e coleta de dados.
                             JPanel cadastroProdutoPerecivelPanel = new JPanel(new GridLayout(11, 2));
 
                             // campos para dados da pessoa física
@@ -596,7 +597,6 @@ public class Main {
                             JTextField validadePerecivelField = new JTextField();
                             cadastroProdutoPerecivelPanel.add(validadePerecivelField);
 
-
                             // local de exibição com o JOptionPane
                             int cadastroProdutoPerecivelResultado = JOptionPane.showConfirmDialog(
                                     null,
@@ -609,15 +609,16 @@ public class Main {
                             if (cadastroProdutoPerecivelResultado == JOptionPane.OK_OPTION) {
                                 String nome = nomePerecivelField.getText();
                                 String descricao = descricaoPerecivelField.getText();
-                                double preco = Double.parseDouble(precoPerecivelField.getText().replace(",","."));
+                                double preco = Double.parseDouble(precoPerecivelField.getText().replace(",", "."));
                                 String validade = validadePerecivelField.getText();
 
-                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado no
+                                // com os dados coletados, cria um novo produto, que agora pode ser adicionado
+                                // no
                                 // json
-                                Produto prod = new Pereciveis(codigo,nome,descricao,preco,validade);
+                                Produto prod = new Pereciveis(codigo, nome, descricao, preco, validade);
 
                                 arrayProduto.add(prod);
-                                Json.writeAllData(arrayProduto,fileProduto);
+                                Json.writeAllData(arrayProduto, fileProduto);
                             } else {// se não clicou em ok, cadastro é cancelado
                                 JOptionPane.showMessageDialog(null, "Cadastro de Produto perecivel cancelado.", titulo,
                                         JOptionPane.WARNING_MESSAGE, null);
@@ -633,6 +634,7 @@ public class Main {
                     JOptionPane.WARNING_MESSAGE, null);
         }
     }
+
     public static void novaCompra() throws IOException {
 
         File fileCompra = new File("Compras.json");
@@ -641,7 +643,7 @@ public class Main {
         ArrayList<Cliente> arrayCliente = new ArrayList<>();
         File fileProduto = new File("Produto.json");
         ArrayList<Produto> arrayProduto = new ArrayList<>();
-    
+
         if (!fileCompra.createNewFile() && fileCompra.length() > 0) {
             arrayCompra.addAll(Json.readAllData(fileCompra, Compra.class));
         }
@@ -651,36 +653,35 @@ public class Main {
         if (!fileProduto.createNewFile() && fileProduto.length() > 0) {
             arrayProduto.addAll(Json.readAllData(fileProduto, Produto.class));
         }
-    
+
         long codigo;
-    
+
         if (!arrayCompra.isEmpty()) {
             codigo = arrayCompra.get(arrayCompra.size() - 1).getId() + 1;
         } else {
             codigo = 1L;
         }
-    
+
         JPanel cadastroDeCompra = new JPanel(new GridLayout(7, 2));
-    
+
         cadastroDeCompra.add(new JLabel("Compra número:"));
         JTextField idField = new JTextField(Long.toString(codigo));
         idField.setEnabled(false);
         idField.setDisabledTextColor(Color.BLACK);
         cadastroDeCompra.add(idField);
-    
+
         cadastroDeCompra.add(new JLabel("Data da compra:"));
         JTextField dataField = new JTextField(LocalDateTime.now().toString());
         dataField.setEnabled(false);
         dataField.setDisabledTextColor(Color.BLACK);
         cadastroDeCompra.add(dataField);
-    
+
         cadastroDeCompra.add(new JLabel("Cliente:"));
-        String[] arrayStringClientes = arrayCliente.stream().map(c ->
-                c.getId().toString() + " - " + c.getNome()
-        ).toArray(String[]::new);
+        String[] arrayStringClientes = arrayCliente.stream().map(c -> c.getId().toString() + " - " + c.getNome())
+                .toArray(String[]::new);
         JComboBox<String> clienteCombobox = new JComboBox<>(arrayStringClientes);
         cadastroDeCompra.add(clienteCombobox);
-    
+
         cadastroDeCompra.add(new JLabel("Itens da compra:"));
         JButton selectItemsButton = new JButton("Selecionar Itens");
         cadastroDeCompra.add(selectItemsButton);
@@ -689,17 +690,19 @@ public class Main {
         cadastroDeCompra.add(new JLabel("Itens selecionados:"));
         JTextArea selectedItemsTextArea = new JTextArea();
         int initialTextAreaHeight = selectedItemsTextArea.getPreferredSize().height;
-        selectedItemsTextArea.setPreferredSize(new Dimension(selectedItemsTextArea.getPreferredSize().width, initialTextAreaHeight * 3));
+        selectedItemsTextArea.setPreferredSize(
+                new Dimension(selectedItemsTextArea.getPreferredSize().width, initialTextAreaHeight * 3));
         selectedItemsTextArea.setEditable(false);
         cadastroDeCompra.add(new JScrollPane(selectedItemsTextArea));
-    
+
         selectItemsButton.addActionListener(e -> {
             try {
                 ItemCompra selectedItem = selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
                 arrayItemsCompra.add(selectedItem);
-                
+
                 // Update the JTextArea to display the selected items
-                selectedItemsTextArea.append("Cód.: "+selectedItem.codigoProduto + " | Quantidade: "+selectedItem.qtde  +"\n");
+                selectedItemsTextArea
+                        .append("Cód.: " + selectedItem.codigoProduto + " | Quantidade: " + selectedItem.qtde + "\n");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -708,8 +711,8 @@ public class Main {
         JTextField parcelasField = new JTextField();
         cadastroDeCompra.add(parcelasField);
 
-
-        //Dá exception quando não digita quantidade e clicka em OK, mas não encerra o app
+        // Dá exception quando não digita quantidade e clicka em OK, mas não encerra o
+        // app
         int SelecaoDeItensResultado = JOptionPane.showConfirmDialog(
                 null,
                 cadastroDeCompra,
@@ -722,27 +725,29 @@ public class Main {
         Long idCliente = Long.parseLong(s[0].trim());
         String dataCompra = dataField.getText();
 
-
-        //Tem que fazer verificação de se o número de parcelas digitado não é maior que o número de parcelas liberado para o cliente
-        Compra c = new Compra(dataCompra,codigo, idCliente,arrayItemsCompra,Integer.parseInt(parcelasField.getText()));
+        // Tem que fazer verificação de se o número de parcelas digitado não é maior que
+        // o número de parcelas liberado para o cliente
+        Compra c = new Compra(dataCompra, codigo, idCliente, arrayItemsCompra,
+                Integer.parseInt(parcelasField.getText()));
         arrayCompra.add(c);
-        Json.writeAllData(arrayCompra,fileCompra);
+        Json.writeAllData(arrayCompra, fileCompra);
         JOptionPane.showMessageDialog(null,
-        "Compra efetuada com sucesso.\nCódigo da compra para futuras atualizações: " + codigo  ,
-        "Compra Efetuada",
-        JOptionPane.INFORMATION_MESSAGE);
-    
+                "Compra efetuada com sucesso.\nCódigo da compra para futuras atualizações: " + codigo,
+                "Compra Efetuada",
+                JOptionPane.INFORMATION_MESSAGE);
+
     }
-    
-    private static ItemCompra selectItemsAndQuantity(ArrayList<Produto> produtos, JComponent parentComponent) throws IOException {
-        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), "Seleção de Produtos", Dialog.ModalityType.APPLICATION_MODAL);
+
+    private static ItemCompra selectItemsAndQuantity(ArrayList<Produto> produtos, JComponent parentComponent)
+            throws IOException {
+        JDialog dialog = new JDialog(SwingUtilities.getWindowAncestor(parentComponent), "Seleção de Produtos",
+                Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setLayout(new BorderLayout());
 
         AtomicReference<Long> id = null;
-    
-        String[] arrayStringProdutos = produtos.stream().map(c ->
-                c.getCodigo() + " - " + c.getNomeProduto()
-        ).toArray(String[]::new);
+
+        String[] arrayStringProdutos = produtos.stream().map(c -> c.getCodigo() + " - " + c.getNomeProduto())
+                .toArray(String[]::new);
         JList<String> itensList = new JList<>(arrayStringProdutos);
         itensList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScroller = new JScrollPane(itensList);
@@ -752,7 +757,7 @@ public class Main {
         quantityPanel.add(new JLabel("Quantidade:"));
         JTextField quantityField = new JTextField();
         quantityPanel.add(quantityField);
-    
+
         JButton confirmButton = new JButton("Confirmar");
         confirmButton.addActionListener(confirmEvent -> {
             int[] selectedIndices = itensList.getSelectedIndices();
@@ -765,9 +770,9 @@ public class Main {
             dialog.dispose();
         });
         quantityPanel.add(confirmButton);
-    
+
         dialog.add(quantityPanel, BorderLayout.SOUTH);
-    
+
         dialog.setSize(300, 200);
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
@@ -775,8 +780,6 @@ public class Main {
 
         return new ItemCompra(Integer.parseInt(quantityField.getText()), Long.parseLong(s[0].trim()));
     }
-
-
 
     public static void listarCompras(ArrayList<Compra> compras) {
         // Sort the compras in reverse order based on id
@@ -793,7 +796,7 @@ public class Main {
         }
 
         // Define column names
-        String[] columnNames = {"ID", "Buyer"};
+        String[] columnNames = { "ID", "Buyer" };
 
         // Create a JTable with the data and column names
         JTable table = new JTable(data, columnNames);
@@ -828,7 +831,8 @@ public class Main {
             pagamentoPanel.add(new JLabel("Código da compra:"));
             JTextField codigoField = new JTextField();
             if (codigoCompra.get() != 0) {
-                codigoField.setText(Long.toString(codigoCompra.get())); // Define o valor anterior de codigoCompra se não for 0
+                codigoField.setText(Long.toString(codigoCompra.get())); // Define o valor anterior de codigoCompra se
+                                                                        // não for 0
             }
             pagamentoPanel.add(codigoField);
 
@@ -890,7 +894,8 @@ public class Main {
                         } else if (parcelasPagasInput > parcelasTotais) {
                             // Mensagem de aviso sobre número de parcelas pagas maior que o total
                             JOptionPane.showMessageDialog(null,
-                                    "Número de parcelas pagas maior do que número de parcelas totais (número de parcelas totais: " + parcelasTotais + ").\n\n Abortando operação.",
+                                    "Número de parcelas pagas maior do que número de parcelas totais (número de parcelas totais: "
+                                            + parcelasTotais + ").\n\n Abortando operação.",
                                     "Aviso",
                                     JOptionPane.WARNING_MESSAGE);
                         } else {
@@ -927,6 +932,7 @@ public class Main {
             }
         }
     }
+
     public static void menuRelatorios() {
         boolean continuar = true;
         do {
@@ -947,59 +953,86 @@ public class Main {
             String mensagem = "Por favor, escolha uma opção:";
             JPanel panel = new JPanel(new GridLayout(opcoes.length, 1));
             ButtonGroup group = new ButtonGroup();
-    
+
             for (String opcao : opcoes) {
                 JRadioButton radioButton = new JRadioButton(opcao);
                 panel.add(radioButton);
                 group.add(radioButton);
             }
-    
+
             int resultado = JOptionPane.showConfirmDialog(null, panel, mensagem, JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE, null);
-    
+
             if (resultado == JOptionPane.OK_OPTION) {
                 boolean opcaoSelecionada = false;
                 Enumeration<AbstractButton> elements = group.getElements();
                 while (elements.hasMoreElements()) {
                     AbstractButton button = elements.nextElement();
-    
+
                     if (button.isSelected()) {
                         opcaoSelecionada = true;
                         String buttonText = button.getText();
-    
+
                         switch (buttonText.charAt(1)) {
                             case 'a':
-                                // Implementação para a opção (a)
+                                // Relação de todos os Clientes que possuem o nome iniciado por uma determinada
+                                // sequência de caracteres;
+                                String nomeCliente = JOptionPane.showInputDialog("Digite a sequência de caracteres:");
+                                new Relatorios().procurarClientePorNome(nomeCliente);
                                 break;
+
                             case 'b':
-                                // Implementação para a opção (b)
+                                // Relação de todos os Produtos;
+                                new Relatorios().relacaoTodosProdutos();
                                 break;
+
                             case 'c':
-                                // Implementação para a opção (c)
+                                // Busca de um produto pelo nome;
+                                String nomeProduto = JOptionPane.showInputDialog("Digite o nome do produto:");
+                                new Relatorios().buscaProdutoNome(nomeProduto);
                                 break;
+
                             case 'd':
-                                // Implementação para a opção (d)
+                                // Relação de produtos que são perecíveis e que estão com a data de validade
+                                // vencida;
+                                new Relatorios().buscaVencidos();
                                 break;
+
                             case 'e':
-                                // Implementação para a opção (e)
+                                // Relação de todas as compras;
+                                new Relatorios().relacaoTodasCompras();
                                 break;
+
                             case 'f':
-                                // Implementação para a opção (f)
+                                // Busca de uma compra pelo número;
+                                Long numeroCompra = Long
+                                        .parseLong(JOptionPane.showInputDialog("Digite o número da compra:"));
+                                new Relatorios().buscaCompraNumero(numeroCompra);
                                 break;
+
                             case 'g':
-                                // Implementação para a opção (g)
+                                // Relação de todas as compras que não foram pagas ainda;
+                                new Relatorios().relacaoPendencias();
                                 break;
+
                             case 'h':
-                                // Implementação para a opção (h)
+                                // Relação das 10 últimas compras pagas;
+                                new Relatorios().relacaoDezUltimas();
                                 break;
+
                             case 'i':
-                                // Implementação para a opção (i)
+                                // Apresentação das informações da compra mais cara;
+                                new Relatorios().compraMaisCara();
                                 break;
+
                             case 'j':
-                                // Implementação para a opção (j)
+                                // Apresentação das informações da compra mais barata;
+                                new Relatorios().compraMaisBarata();
                                 break;
+
                             case 'k':
-                                // Implementação para a opção (k)
+                                // Relação do valor total de compras feitas em cada mês nos últimos 12 meses.
+                                new Relatorios().relacaoMensalDoze();
                                 break;
                             case '0':
                                 // Voltar para o menu principal
@@ -1009,7 +1042,8 @@ public class Main {
                     }
                 }
                 if (!opcaoSelecionada) {
-                    JOptionPane.showMessageDialog(null, "Nenhuma opção selecionada. Se quiser sair, selecione o botão Cancelar.",
+                    JOptionPane.showMessageDialog(null,
+                            "Nenhuma opção selecionada. Se quiser sair, selecione o botão Cancelar.",
                             titulo, JOptionPane.WARNING_MESSAGE, null);
                 }
             } else {
@@ -1019,6 +1053,5 @@ public class Main {
             }
         } while (continuar);
     }
-    
-    
+
 }

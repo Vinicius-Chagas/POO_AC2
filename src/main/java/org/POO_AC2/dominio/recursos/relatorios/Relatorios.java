@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 public class Relatorios {
 
     File fileCliente = new File("Cliente.json");
@@ -22,25 +27,44 @@ public class Relatorios {
     File fileCompra = new File("Compra.json");
 
     //Função que procura um cliente dado o inicio de um nome
-    public void procurarClientePorNome(String nome){
-        boolean encontrado = false;
+    public void procurarClientePorNome(String nome) {
         try {
-            ArrayList<Cliente> arrayCliente = new ArrayList<>(Json.readAllData(fileCliente, Cliente.class)); // Le o arquivo json e armazena em um array list
+            ArrayList<Cliente> arrayCliente = new ArrayList<>(Json.readAllData(fileCliente, Cliente.class));
 
-            for (Cliente a: arrayCliente) {
-                if(a.getNome().startsWith(nome)){ //StartsWith para verificar se o nome do cliente atual começa com o argumento passado
-                    Json.stringfy(a);
-                    encontrado = true;
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("ID");
+            tableModel.addColumn("Nome");
+            tableModel.addColumn("CEP"); // Only displaying the CEP from Endereco
+            tableModel.addColumn("Data de Cadastro");
+
+            // Fill the table model with matching clients
+            for (Cliente cliente : arrayCliente) {
+                if (cliente.getNome().startsWith(nome)) {
+                    // Get the CEP from the Endereco object
+                    String cep = cliente.getEndereco() != null ? String.valueOf(cliente.getEndereco().getCep()) : "";
+                    tableModel.addRow(new Object[]{cliente.getId(), cliente.getNome(), cep, cliente.getDataCadastro()});
                 }
             }
-            if(!encontrado){ //Se nao encontrar, mostra mensagem não encontrado
-                System.out.println("Não existem clientes que comecem com '"+nome+"' na base de dados.");
+
+            // Create a table using the table model
+            JTable table = new JTable(tableModel);
+
+            // Create a scroll pane to hold the table
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            // Show the table in a dialog
+            JOptionPane.showMessageDialog(null, scrollPane, "Clientes Encontrados",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            if (tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Não existem clientes que comecem com '" + nome + "' na base de dados.",
+                        "Nenhum Cliente Encontrado", JOptionPane.WARNING_MESSAGE);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void relacaoTodosProdutos(){
