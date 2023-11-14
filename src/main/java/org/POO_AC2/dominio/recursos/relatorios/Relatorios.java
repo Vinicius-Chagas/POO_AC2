@@ -9,6 +9,7 @@ import org.POO_AC2.dominio.recursos.Json.Json;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -318,44 +319,20 @@ public class Relatorios {
 
     public void relacaoDezUltimas() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
+                                                                                                          // arquivo
+                                                                                                          // json e
+                                                                                                          // armazena em
+                                                                                                          // um array
+                                                                                                          // list
 
-            // Sort the array in descending order using the date of the last payment
+            // Ordena o array do maior para o menor uilizando a data do ultimo pagamento
             arrayCompras.sort((o1, o2) -> LocalDate.parse(o2.getUltimoPagamento())
                     .compareTo(LocalDate.parse(o1.getUltimoPagamento())));
-            // Get the first ten items from the array or all items if less than 10
-            int numComprasToShow = Math.min(10, arrayCompras.size());
-            ArrayList<Compra> ultimasDez = new ArrayList<>(arrayCompras.subList(0, numComprasToShow));
+            // Pega os dez primeiros itens do array
+            ArrayList<Compra> ultimasDez = new ArrayList<>(arrayCompras.subList(0, 10));
 
-            // Create a table model to hold the data
-            DefaultTableModel tableModel = new DefaultTableModel();
-            tableModel.addColumn("Número da Compra");
-            tableModel.addColumn("Data da Compra");
-            tableModel.addColumn("Valor Total");
-            tableModel.addColumn("Parcelas Pagas");
-            tableModel.addColumn("Parcelas Totais");
-
-            // Fill the table model with the ten most recent purchases
-            for (Compra compra : ultimasDez) {
-                tableModel.addRow(new Object[]{compra.getId(), compra.getDataCompra(),
-                        compra.getValorTotal(), compra.getParcelasPagas(), compra.getParcelasTotais()});
-            }
-
-            if (tableModel.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
-                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
-            } else {
-                // Create a table using the table model
-                JTable table = new JTable(tableModel);
-
-                // Create a scroll pane to hold the table
-                JScrollPane scrollPane = new JScrollPane(table);
-
-                // Show the table in a dialog
-                JOptionPane.showMessageDialog(null, scrollPane, "Relação das Últimas Compras",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-
+            Json.stringfy(ultimasDez);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -363,17 +340,29 @@ public class Relatorios {
 
     public void compraMaisCara() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
-                                                                                                          // arquivo
-                                                                                                          // json e
-                                                                                                          // armazena em
-                                                                                                          // um array
-                                                                                                          // list
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
 
-            // Ordena o array do maior para o menor
-            arrayCompras.sort((o1, o2) -> o2.getValorTotal().compareTo(o1.getValorTotal()));
-            // Imprime o primeiro item do array
-            Json.stringfy(arrayCompras.get(0));
+            if (!arrayCompras.isEmpty()) {
+                // Ordena o array do maior para o menor
+                arrayCompras.sort((o1, o2) -> o2.getValorTotal().compareTo(o1.getValorTotal()));
+                
+                // Create a message to display in the dialog
+                StringBuilder message = new StringBuilder();
+                Compra compraMaisCara = arrayCompras.get(0);
+                message.append("Número da Compra: ").append(compraMaisCara.getId()).append("\n");
+                message.append("Data da Compra: ").append(compraMaisCara.getDataCompra()).append("\n");
+                message.append("Valor Total: ").append(compraMaisCara.getValorTotal()).append("\n");
+                message.append("Parcelas Pagas: ").append(compraMaisCara.getParcelasPagas()).append("\n");
+                message.append("Parcelas Totais: ").append(compraMaisCara.getParcelasTotais()).append("\n");
+
+                // Show the details of the most expensive purchase in a dialog
+                JOptionPane.showMessageDialog(null, message.toString(), "Compra Mais Cara",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
+                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -381,16 +370,29 @@ public class Relatorios {
 
     public void compraMaisBarata() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
-                                                                                                          // arquivo
-                                                                                                          // json e
-                                                                                                          // armazena em
-                                                                                                          // um array
-                                                                                                          // list
-            // Ordena o array do menor para o maior
-            arrayCompras.sort((o1, o2) -> o1.getValorTotal().compareTo(o2.getValorTotal()));
-            // Pega o primeiro item do array
-            Json.stringfy(arrayCompras.get(0));
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
+
+            if (!arrayCompras.isEmpty()) {
+                // Ordena o array do menor para o maior
+                arrayCompras.sort((o1, o2) -> o1.getValorTotal().compareTo(o2.getValorTotal()));
+
+                // Create a message to display in the dialog
+                StringBuilder message = new StringBuilder();
+                Compra compraMaisBarata = arrayCompras.get(0);
+                message.append("Número da Compra: ").append(compraMaisBarata.getId()).append("\n");
+                message.append("Data da Compra: ").append(compraMaisBarata.getDataCompra()).append("\n");
+                message.append("Valor Total: ").append(compraMaisBarata.getValorTotal()).append("\n");
+                message.append("Parcelas Pagas: ").append(compraMaisBarata.getParcelasPagas()).append("\n");
+                message.append("Parcelas Totais: ").append(compraMaisBarata.getParcelasTotais()).append("\n");
+
+                // Show the details of the least expensive purchase in a dialog
+                JOptionPane.showMessageDialog(null, message.toString(), "Compra Mais Barata",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
+                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -398,28 +400,38 @@ public class Relatorios {
 
     public void relacaoMensalDoze() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
-                                                                                                          // arquivo
-                                                                                                          // json e
-                                                                                                          // armazena em
-                                                                                                          // um array
-                                                                                                          // list
-            HashMap<Integer, Double> meses = new HashMap<Integer, Double>(); // Cria um hashmap chave <Mês, valor>
-            int month = 0;
-            for (Compra c : arrayCompras) {
-                month = LocalDate.parse(c.getDataCompra()).getMonthValue();
-                if (meses.containsKey(LocalDate.parse(c.getDataCompra()).getMonthValue())) { // Verifica se o mes lido
-                                                                                             // já existe no hashmap
-                    // Soma o valor da compra ao valor do mês correspondente
-                    meses.put(month, meses.get(month) + c.getValorTotal());
-                } else {
-                    meses.get(month); // Adiciona o mês ao hashmap
-                    // Soma o valor da compra ao valor do mês correspondente
-                    meses.put(month, meses.get(month) + c.getValorTotal());
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
+
+            if (!arrayCompras.isEmpty()) {
+                HashMap<Integer, Double> meses = new HashMap<>(); // Cria um hashmap chave <Mês, valor>
+
+                for (Compra c : arrayCompras) {
+                    // Use DateTimeFormatter to parse the date string with time information
+                    LocalDate date = LocalDate.parse(c.getDataCompra(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+                    // Extract the month from the parsed date
+                    int month = date.getMonthValue();
+
+                    meses.put(month, meses.getOrDefault(month, 0.0) + c.getValorTotal());
                 }
+
+                // Create a message to display in the dialog
+                StringBuilder message = new StringBuilder();
+                message.append("Total de Compras nos Últimos 12 Meses:\n\n");
+
+                for (int i = 1; i <= 12; i++) {
+                    message.append("Mês ").append(i).append(": ");
+                    message.append(meses.getOrDefault(i, 0.0)).append("\n");
+                }
+
+                // Show the total purchase value for each month in the last 12 months in a dialog
+                JOptionPane.showMessageDialog(null, message.toString(), "Relação Mensal dos Últimos 12 Meses",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
+                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
             }
 
-            Json.stringfy(meses);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
