@@ -778,31 +778,67 @@ public class Main {
 
 
 
+    public static void listarCompras(ArrayList<Compra> compras) {
+        // Sort the compras in reverse order based on id
+        Collections.sort(compras, (c1, c2) -> Long.compare(c2.getId(), c1.getId()));
+
+        // Create a 2D array to hold data for the table
+        Object[][] data = new Object[compras.size()][2];
+
+        // Populate the data array with compra information
+        for (int i = 0; i < compras.size(); i++) {
+            Compra compra = compras.get(i);
+            data[i][0] = compra.getId();
+            data[i][1] = compra.getCliente().getNome(); // Adjust this based on your Compra structure
+        }
+
+        // Define column names
+        String[] columnNames = {"ID", "Buyer"};
+
+        // Create a JTable with the data and column names
+        JTable table = new JTable(data, columnNames);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Put the table in a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Show the table in a JOptionPane
+        JOptionPane.showMessageDialog(null, scrollPane, "Lista de Compras", JOptionPane.PLAIN_MESSAGE);
+    }
+
     public static void atualizarPagamentoCompra() throws IOException {
         File fileCompra = new File("Compras.json");
         ArrayList<Compra> arrayCompra = new ArrayList<>();
-    
+
         if (!fileCompra.createNewFile() && fileCompra.length() > 0) {
             arrayCompra.addAll(Json.readAllData(fileCompra, Compra.class));
         }
-    
-        AtomicLong codigoCompra = new AtomicLong(); // Use AtomicLong for mutability
-    
+
+        AtomicLong codigoCompra = new AtomicLong(); // Usa AtomicLong para mutabilidade
+
         while (true) {
-            JPanel pagamentoPanel = new JPanel(new GridLayout(3, 2));
-    
+            JPanel pagamentoPanel = new JPanel(new GridLayout(4, 2));
+
             // Campos para dados da pessoa física
-            pagamentoPanel.add(new JLabel("Codigo da compra:"));
+            pagamentoPanel.add(new JLabel("Deseja ver as compras?"));
+
+            JButton listarComprasButton = new JButton("Listar Compras");
+            pagamentoPanel.add(listarComprasButton);
+
+            pagamentoPanel.add(new JLabel("Código da compra:"));
             JTextField codigoField = new JTextField();
             if (codigoCompra.get() != 0) {
-                codigoField.setText(Long.toString(codigoCompra.get())); // Set the previous codigoCompra value if not 0
+                codigoField.setText(Long.toString(codigoCompra.get())); // Define o valor anterior de codigoCompra se não for 0
             }
             pagamentoPanel.add(codigoField);
-    
+
             pagamentoPanel.add(new JLabel("Número de parcelas pagas:"));
             JTextField parcelasPagasField = new JTextField();
             pagamentoPanel.add(parcelasPagasField);
-    
+
+            // Adiciona um listener para o botão de listar compras
+            listarComprasButton.addActionListener(e -> listarCompras(arrayCompra));
+
             // Local de exibição com o JOptionPane
             int resultado = JOptionPane.showConfirmDialog(
                     null,
@@ -811,79 +847,86 @@ public class Main {
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE,
                     null);
-    
+
             // Se clicar em OK, os dados são coletados
             if (resultado == JOptionPane.OK_OPTION) {
-                // Retrieve the entered purchase code and the number of paid installments
-                codigoCompra.set(Long.parseLong(codigoField.getText()));
-                int parcelasPagas = Integer.parseInt(parcelasPagasField.getText());
-    
-                // Find the corresponding Compra object
-                Optional<Compra> compraOptional = arrayCompra.stream()
-                        .filter(compra -> compra.getId() == codigoCompra.get())
-                        .findFirst();
-    
-                if (compraOptional.isPresent()) {
-                    Compra compra = compraOptional.get();
-    
-                    // Check if the inputted number is smaller or equal to the existing number
-                    if (parcelasPagas <= compra.getParcelasPagas()) {
-                        // Display a confirmation message
-                        int confirmationResult = JOptionPane.showConfirmDialog(
-                                null,
-                                "O número de parcelas digitado é menor ou igual ao número existente de parcelas. Realmente deseja realizar essa operação?",
-                                "Confirmação",
-                                JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
-    
-                        if (confirmationResult == JOptionPane.CANCEL_OPTION) {
-                            // User canceled the operation
-                            JOptionPane.showMessageDialog(null,
-                                    "Operação de atualização de parcelas cancelada",
-                                    "Cancelado",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            continue; // Restart the loop
+                try {
+                    // Obtém valores do formulário
+                    long codigoCompraInput = Long.parseLong(codigoField.getText());
+                    int parcelasPagasInput = Integer.parseInt(parcelasPagasField.getText());
+
+                    // Validação se o número de parcelas pagas é menor ou igual ao número existente
+                    Compra compraSelecionada = null;
+                    for (Compra compra : arrayCompra) {
+                        if (compra.getId() == codigoCompraInput) {
+                            compraSelecionada = compra;
+                            break;
                         }
-                    } else if (parcelasPagas > compra.getParcelasTotais()) {
-                        // Display a warning message if the number of paid installments exceeds the total installments
-                        JOptionPane.showMessageDialog(null,
-                                "Número de parcelas pagas maior do que número de parcelas totais (número de parcelas totais: " + compra.getParcelasTotais() + ").\n\nAbortando operação.",
-                                "Aviso",
-                                JOptionPane.WARNING_MESSAGE);
-                        continue; // Restart the loop
                     }
-    
-                    // Update "parcelasPagas" field
-                    compra.setParcelasPagas(parcelasPagas);
-    
-                    // Write the updated data back to the JSON file
-                    Json.writeAllData(arrayCompra, fileCompra);
-    
-                    // Display success message
+
+                    if (compraSelecionada != null) {
+                        int parcelasTotais = compraSelecionada.getParcelasTotais();
+                        int parcelasPagasExistente = compraSelecionada.getParcelasPagas();
+
+                        if (parcelasPagasInput <= parcelasPagasExistente) {
+                            // Mensagem de aviso sobre parcelas pagas menor ou igual
+                            int confirmacao = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "O número de parcelas pagas é menor ou igual ao número existente de parcelas. Realmente deseja realizar essa operação?",
+                                    "Aviso",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.WARNING_MESSAGE);
+
+                            if (confirmacao == JOptionPane.OK_OPTION) {
+                                // Continua com a operação
+                                compraSelecionada.setParcelasPagas(parcelasPagasInput);
+                                Json.writeAllData(arrayCompra, fileCompra);
+                                JOptionPane.showMessageDialog(null,
+                                        "Operação realizada com sucesso!",
+                                        "Sucesso",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                break;
+                            }
+                        } else if (parcelasPagasInput > parcelasTotais) {
+                            // Mensagem de aviso sobre número de parcelas pagas maior que o total
+                            JOptionPane.showMessageDialog(null,
+                                    "Número de parcelas pagas maior do que número de parcelas totais (número de parcelas totais: " + parcelasTotais + ").\n\n Abortando operação.",
+                                    "Aviso",
+                                    JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            // Operação normal
+                            compraSelecionada.setParcelasPagas(parcelasPagasInput);
+                            Json.writeAllData(arrayCompra, fileCompra);
+                            JOptionPane.showMessageDialog(null,
+                                    "Operação realizada com sucesso!",
+                                    "Sucesso",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            break;
+                        }
+                    } else {
+                        // Mensagem de erro se a compra não for encontrada
+                        JOptionPane.showMessageDialog(null,
+                                "Compra não encontrada. Verifique o código da compra.",
+                                "Erro",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException ex) {
+                    // Trata exceção de formato inválido
                     JOptionPane.showMessageDialog(null,
-                            "Pagamento efetuado com sucesso para a compra de código: " + codigoCompra.get(),
-                            "Pagamento Efetuado",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    break; // Exit the loop after successful operation
-                } else {
-                    // Display an error message if the purchase code is not found
-                    JOptionPane.showMessageDialog(null,
-                            "Compra não encontrada com o código: " + codigoCompra.get(),
+                            "Por favor, insira valores válidos para o código da compra e número de parcelas pagas.",
                             "Erro",
                             JOptionPane.ERROR_MESSAGE);
-                    continue; // Restart the loop
                 }
             } else {
-                // User canceled the operation
+                // O usuário cancelou a operação
                 JOptionPane.showMessageDialog(null,
                         "Operação de atualização de parcelas cancelada",
                         "Cancelado",
                         JOptionPane.INFORMATION_MESSAGE);
-                break; // Exit the loop
+                break; // Sai do loop
             }
         }
     }
-    
     
     
 
