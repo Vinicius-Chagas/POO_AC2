@@ -6,7 +6,6 @@ import org.POO_AC2.dominio.produto.Pereciveis;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,9 +23,9 @@ public class Relatorios {
     File fileCliente = new File("Cliente.json");
     File fileProduto = new File("Produto.json");
 
-    File fileCompra = new File("Compra.json");
+    File fileCompra = new File("Compras.json");
 
-    //Função que procura um cliente dado o inicio de um nome
+    // Função que procura um cliente dado o inicio de um nome
     public void procurarClientePorNome(String nome) {
         try {
             ArrayList<Cliente> arrayCliente = new ArrayList<>(Json.readAllData(fileCliente, Cliente.class));
@@ -43,7 +42,8 @@ public class Relatorios {
                 if (cliente.getNome().startsWith(nome)) {
                     // Get the CEP from the Endereco object
                     String cep = cliente.getEndereco() != null ? String.valueOf(cliente.getEndereco().getCep()) : "";
-                    tableModel.addRow(new Object[]{cliente.getId(), cliente.getNome(), cep, cliente.getDataCadastro()});
+                    tableModel.addRow(
+                            new Object[] { cliente.getId(), cliente.getNome(), cep, cliente.getDataCadastro() });
                 }
             }
 
@@ -58,7 +58,8 @@ public class Relatorios {
                     JOptionPane.INFORMATION_MESSAGE);
 
             if (tableModel.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(null, "Não existem clientes que comecem com '" + nome + "' na base de dados.",
+                JOptionPane.showMessageDialog(null,
+                        "Não existem clientes que comecem com '" + nome + "' na base de dados.",
                         "Nenhum Cliente Encontrado", JOptionPane.WARNING_MESSAGE);
             }
 
@@ -88,8 +89,8 @@ public class Relatorios {
                     dataValidade = ((Pereciveis) produto).getDataValidade();
                 }
 
-                tableModel.addRow(new Object[]{produto.getCodigo(), produto.getNomeProduto(),
-                        produto.getDescricao(), produto.getPreco(), dataValidade});
+                tableModel.addRow(new Object[] { produto.getCodigo(), produto.getNomeProduto(),
+                        produto.getDescricao(), produto.getPreco(), dataValidade });
             }
 
             // Create a table using the table model
@@ -130,8 +131,8 @@ public class Relatorios {
                         dataValidade = ((Pereciveis) produto).getDataValidade();
                     }
 
-                    tableModel.addRow(new Object[]{produto.getCodigo(), produto.getNomeProduto(),
-                            produto.getDescricao(), produto.getPreco(), dataValidade});
+                    tableModel.addRow(new Object[] { produto.getCodigo(), produto.getNomeProduto(),
+                            produto.getDescricao(), produto.getPreco(), dataValidade });
                     encontrou = true;
                 }
             }
@@ -156,112 +157,265 @@ public class Relatorios {
         }
     }
 
-    public void buscaVencidos(){
+    public void buscaVencidos() {
         try {
-            ArrayList<Produto> arrayProduto = new ArrayList<>(Json.readAllData(fileProduto, Produto.class)); // Le o arquivo json e armazena em um array list
-            for (Produto p: arrayProduto) {
-                if(p.getClass() == Pereciveis.class){ //Verifica se a classe do produto atual é de um produto perecivel
-                    if(((Pereciveis) p).Vencido()){ //Verifica se o produto atual está vencido
-                        Json.stringfy(p);
-                    }
+            ArrayList<Produto> arrayProduto = new ArrayList<>(Json.readAllData(fileProduto, Produto.class));
+
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Código");
+            tableModel.addColumn("Nome do Produto");
+            tableModel.addColumn("Descrição");
+            tableModel.addColumn("Preço");
+            tableModel.addColumn("Data de Validade");
+            tableModel.addColumn("Vencido"); // Adding the Vencido column
+
+            // Fill the table model with expired product data
+            for (Produto produto : arrayProduto) {
+                if (produto instanceof Pereciveis) {
+                    // If Pereciveis, get the dataValidade and Vencido status
+                    String dataValidade = ((Pereciveis) produto).getDataValidade();
+                    boolean vencido = ((Pereciveis) produto).Vencido();
+
+                    tableModel.addRow(new Object[] { produto.getCodigo(), produto.getNomeProduto(),
+                            produto.getDescricao(), produto.getPreco(), dataValidade, vencido ? "Sim" : "Não" });
                 }
             }
+
+            if (tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Não existem produtos perecíveis vencidos.",
+                        "Produtos Perecíveis Vencidos Não Encontrados", JOptionPane.WARNING_MESSAGE);
+            } else {
+                // Create a table using the table model
+                JTable table = new JTable(tableModel);
+
+                // Create a scroll pane to hold the table
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Show the table in a dialog
+                JOptionPane.showMessageDialog(null, scrollPane, "Produtos Perecíveis Vencidos",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void relacaoTodasCompras(){
+    public void relacaoTodasCompras() {
         try {
-            Json.stringfy(Json.readAllData(fileCompra, Compra.class)); //Lê o arquivo json e imprime tudo na tela
+            // Update the file name to "Compras.json"
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
+
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Número da Compra");
+            tableModel.addColumn("Data da Compra");
+            tableModel.addColumn("Valor Total");
+            tableModel.addColumn("Parcelas Pagas");
+            tableModel.addColumn("Parcelas Totais");
+
+            // Fill the table model with purchase data
+            for (Compra compra : arrayCompras) {
+                tableModel.addRow(new Object[] { compra.getId(), compra.getDataCompra(),
+                        compra.getValorTotal(), compra.getParcelasPagas(), compra.getParcelasTotais() });
+            }
+
+            if (tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
+                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
+            } else {
+                // Create a table using the table model
+                JTable table = new JTable(tableModel);
+
+                // Create a scroll pane to hold the table
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Show the table in a dialog
+                JOptionPane.showMessageDialog(null, scrollPane, "Relação de Todas as Compras",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void buscaCompraNumero(Long numero){
+    public void buscaCompraNumero(Long numero) {
         boolean encontrou = false;
         try {
-            ArrayList<Compra> arrayCompra = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
-            for (Compra c: arrayCompra) {
-                if(Objects.equals(c.getId(), numero)){ //Verifica se o id da compra é o numero passado como argumento
-                    Json.stringfy(c);
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
+
+            // Search for the purchase with the specified number
+            for (Compra compra : arrayCompras) {
+                if (Objects.equals(compra.getId(), numero)) {
+                    // Create a message to display in the dialog
+                    StringBuilder message = new StringBuilder();
+                    message.append("Número da Compra: ").append(compra.getId()).append("\n");
+                    message.append("Data da Compra: ").append(compra.getDataCompra()).append("\n");
+                    message.append("Valor Total: ").append(compra.getValorTotal()).append("\n");
+                    message.append("Parcelas Pagas: ").append(compra.getParcelasPagas()).append("\n");
+                    message.append("Parcelas Totais: ").append(compra.getParcelasTotais()).append("\n");
+
+                    // Show the purchase details in a dialog
+                    JOptionPane.showMessageDialog(null, message.toString(), "Detalhes da Compra",
+                            JOptionPane.INFORMATION_MESSAGE);
+
                     encontrou = true;
+                    break;
                 }
             }
-            if(!encontrou) System.out.println("Não foi encontrado nenhuma compra que corresponda ao número: " + numero);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    public void relacaoPendencias(){
-        try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
-            for(Compra c: arrayCompras){
-                if(c.getParcelasTotais() < c.getParcelasPagas()) // Verifica se ainda há parcelas a serem pagas na compra atual
-                    Json.stringfy(c);
+            if (!encontrou) {
+                JOptionPane.showMessageDialog(null, "Não foi encontrada nenhuma compra com o número: " + numero,
+                        "Compra Não Encontrada", JOptionPane.WARNING_MESSAGE);
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void relacaoDezUltimas(){
+    public void relacaoPendencias() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
 
-            //Ordena o array do maior para o menor uilizando a data do ultimo pagamento
-            arrayCompras.sort((o1, o2) -> LocalDate.parse(o2.getUltimoPagamento()).compareTo(LocalDate.parse(o1.getUltimoPagamento())));
-            // Pega os dez primeiros itens do array
-            ArrayList<Compra> ultimasDez = new ArrayList<>(arrayCompras.subList(0, 10));
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Número da Compra");
+            tableModel.addColumn("Data da Compra");
+            tableModel.addColumn("Valor Total");
+            tableModel.addColumn("Parcelas Pagas");
+            tableModel.addColumn("Parcelas Totais");
 
-            Json.stringfy(ultimasDez);
+            // Fill the table model with purchases that have pending payments
+            for (Compra compra : arrayCompras) {
+                if (compra.getParcelasTotais() > compra.getParcelasPagas()) {
+                    tableModel.addRow(new Object[]{compra.getId(), compra.getDataCompra(),
+                            compra.getValorTotal(), compra.getParcelasPagas(), compra.getParcelasTotais()});
+                }
+            }
+
+            if (tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Não existem compras com parcelas pendentes.",
+                        "Compras sem Pagamento", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Create a table using the table model
+                JTable table = new JTable(tableModel);
+
+                // Create a scroll pane to hold the table
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Show the table in a dialog
+                JOptionPane.showMessageDialog(null, scrollPane, "Relação de Compras com Pagamentos Pendentes",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void compraMaisCara(){
+    public void relacaoDezUltimas() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
 
-            //Ordena o array do maior para o menor
+            // Sort the array in descending order using the date of the last payment
+            arrayCompras.sort((o1, o2) -> LocalDate.parse(o2.getUltimoPagamento())
+                    .compareTo(LocalDate.parse(o1.getUltimoPagamento())));
+            // Get the first ten items from the array or all items if less than 10
+            int numComprasToShow = Math.min(10, arrayCompras.size());
+            ArrayList<Compra> ultimasDez = new ArrayList<>(arrayCompras.subList(0, numComprasToShow));
+
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Número da Compra");
+            tableModel.addColumn("Data da Compra");
+            tableModel.addColumn("Valor Total");
+            tableModel.addColumn("Parcelas Pagas");
+            tableModel.addColumn("Parcelas Totais");
+
+            // Fill the table model with the ten most recent purchases
+            for (Compra compra : ultimasDez) {
+                tableModel.addRow(new Object[]{compra.getId(), compra.getDataCompra(),
+                        compra.getValorTotal(), compra.getParcelasPagas(), compra.getParcelasTotais()});
+            }
+
+            if (tableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(null, "Não existem compras registradas.",
+                        "Compras Não Encontradas", JOptionPane.WARNING_MESSAGE);
+            } else {
+                // Create a table using the table model
+                JTable table = new JTable(tableModel);
+
+                // Create a scroll pane to hold the table
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Show the table in a dialog
+                JOptionPane.showMessageDialog(null, scrollPane, "Relação das Últimas Compras",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void compraMaisCara() {
+        try {
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
+                                                                                                          // arquivo
+                                                                                                          // json e
+                                                                                                          // armazena em
+                                                                                                          // um array
+                                                                                                          // list
+
+            // Ordena o array do maior para o menor
             arrayCompras.sort((o1, o2) -> o2.getValorTotal().compareTo(o1.getValorTotal()));
-            //Imprime o primeiro item do array
+            // Imprime o primeiro item do array
             Json.stringfy(arrayCompras.get(0));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void compraMaisBarata(){
+    public void compraMaisBarata() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
-            //Ordena o array do menor para o maior
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
+                                                                                                          // arquivo
+                                                                                                          // json e
+                                                                                                          // armazena em
+                                                                                                          // um array
+                                                                                                          // list
+            // Ordena o array do menor para o maior
             arrayCompras.sort((o1, o2) -> o1.getValorTotal().compareTo(o2.getValorTotal()));
-            //Pega o primeiro item do array
+            // Pega o primeiro item do array
             Json.stringfy(arrayCompras.get(0));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void relacaoMensalDoze(){
+    public void relacaoMensalDoze() {
         try {
-            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o arquivo json e armazena em um array list
-            HashMap<Integer,Double> meses = new HashMap<Integer, Double>(); // Cria um hashmap chave <Mês, valor>
+            ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class)); // Le o
+                                                                                                          // arquivo
+                                                                                                          // json e
+                                                                                                          // armazena em
+                                                                                                          // um array
+                                                                                                          // list
+            HashMap<Integer, Double> meses = new HashMap<Integer, Double>(); // Cria um hashmap chave <Mês, valor>
             int month = 0;
-            for (Compra c:arrayCompras){
+            for (Compra c : arrayCompras) {
                 month = LocalDate.parse(c.getDataCompra()).getMonthValue();
-                if(meses.containsKey(LocalDate.parse(c.getDataCompra()).getMonthValue())){ // Verifica se o mes lido já existe no hashmap
-                    //Soma o valor da compra ao valor do mês correspondente
+                if (meses.containsKey(LocalDate.parse(c.getDataCompra()).getMonthValue())) { // Verifica se o mes lido
+                                                                                             // já existe no hashmap
+                    // Soma o valor da compra ao valor do mês correspondente
                     meses.put(month, meses.get(month) + c.getValorTotal());
-                }
-                else {
-                    meses.get(month); //Adiciona o mês ao hashmap
-                    //Soma o valor da compra ao valor do mês correspondente
-                    meses.put(month, meses.get(month) +c.getValorTotal());
+                } else {
+                    meses.get(month); // Adiciona o mês ao hashmap
+                    // Soma o valor da compra ao valor do mês correspondente
+                    meses.put(month, meses.get(month) + c.getValorTotal());
                 }
             }
 
@@ -270,6 +424,5 @@ public class Relatorios {
             throw new RuntimeException(e);
         }
     }
-
 
 }
