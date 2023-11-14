@@ -67,25 +67,90 @@ public class Relatorios {
         }
     }
 
-    public void relacaoTodosProdutos(){
+    public void relacaoTodosProdutos() {
         try {
-            Json.stringfy(Json.readAllData(fileProduto, Produto.class)); //Lê o arquivo de texto e printa tudo na tela
+            ArrayList<Produto> arrayProduto = new ArrayList<>(Json.readAllData(fileProduto, Produto.class));
+
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Código");
+            tableModel.addColumn("Nome do Produto");
+            tableModel.addColumn("Descrição");
+            tableModel.addColumn("Preço");
+            tableModel.addColumn("Data de Validade"); // Adding the Data de Validade column
+
+            // Fill the table model with product data
+            for (Produto produto : arrayProduto) {
+                String dataValidade = "N.A."; // Default value if Data de Validade doesn't exist
+
+                if (produto instanceof Pereciveis) {
+                    // If Pereciveis, get the dataValidade
+                    dataValidade = ((Pereciveis) produto).getDataValidade();
+                }
+
+                tableModel.addRow(new Object[]{produto.getCodigo(), produto.getNomeProduto(),
+                        produto.getDescricao(), produto.getPreco(), dataValidade});
+            }
+
+            // Create a table using the table model
+            JTable table = new JTable(tableModel);
+
+            // Create a scroll pane to hold the table
+            JScrollPane scrollPane = new JScrollPane(table);
+
+            // Show the table in a dialog
+            JOptionPane.showMessageDialog(null, scrollPane, "Relação de Todos os Produtos",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void buscaProdutoNome(String nome){
+    public void buscaProdutoNome(String nome) {
         boolean encontrou = false;
         try {
-            ArrayList<Produto> arrayProduto = new ArrayList<>(Json.readAllData(fileProduto, Produto.class)); // Le o arquivo json e armazena em um array list
-            for (Produto p: arrayProduto) {
-                if(p.getNomeProduto().compareTo(nome) == 0){ // Verifica se o nome do produto atual é o nome passado como argumento
-                    Json.stringfy(p);
+            ArrayList<Produto> arrayProduto = new ArrayList<>(Json.readAllData(fileProduto, Produto.class));
+
+            // Create a table model to hold the data
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Código");
+            tableModel.addColumn("Nome do Produto");
+            tableModel.addColumn("Descrição");
+            tableModel.addColumn("Preço");
+            tableModel.addColumn("Data de Validade"); // Adding the Data de Validade column
+
+            // Fill the table model with product data that matches the given name
+            for (Produto produto : arrayProduto) {
+                if (produto.getNomeProduto().compareTo(nome) == 0) {
+                    String dataValidade = "N.A."; // Default value if Data de Validade doesn't exist
+
+                    if (produto instanceof Pereciveis) {
+                        // If Pereciveis, get the dataValidade
+                        dataValidade = ((Pereciveis) produto).getDataValidade();
+                    }
+
+                    tableModel.addRow(new Object[]{produto.getCodigo(), produto.getNomeProduto(),
+                            produto.getDescricao(), produto.getPreco(), dataValidade});
                     encontrou = true;
                 }
             }
-            if(!encontrou) System.out.println("Produto com nome " + nome + " não foi encontrado.");
+
+            if (!encontrou) {
+                JOptionPane.showMessageDialog(null, "Produto com nome '" + nome + "' não foi encontrado.",
+                        "Produto Não Encontrado", JOptionPane.WARNING_MESSAGE);
+            } else {
+                // Create a table using the table model
+                JTable table = new JTable(tableModel);
+
+                // Create a scroll pane to hold the table
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Show the table in a dialog
+                JOptionPane.showMessageDialog(null, scrollPane, "Informações do Produto",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

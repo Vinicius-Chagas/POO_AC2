@@ -975,8 +975,7 @@ public class Main {
 
                         switch (buttonText.charAt(1)) {
                             case 'a':
-                                // Relação de todos os Clientes que possuem o nome iniciado por uma determinada
-                                // sequência de caracteres;
+                                // Relação de todos os Clientes que possuem o nome iniciado por uma determinada sequência de caracteres;
                                 String nomeCliente = JOptionPane.showInputDialog("Digite a sequência de caracteres:");
                                 new Relatorios().procurarClientePorNome(nomeCliente);
                                 break;
