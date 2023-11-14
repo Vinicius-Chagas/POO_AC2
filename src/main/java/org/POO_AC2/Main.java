@@ -685,17 +685,24 @@ public class Main {
         cadastroDeCompra.add(selectItemsButton);
 
         ArrayList<ItemCompra> arrayItemsCompra = new ArrayList<>();
-
+        cadastroDeCompra.add(new JLabel("Itens selecionados:"));
+        JTextArea selectedItemsTextArea = new JTextArea();
+        int initialTextAreaHeight = selectedItemsTextArea.getPreferredSize().height;
+        selectedItemsTextArea.setPreferredSize(new Dimension(selectedItemsTextArea.getPreferredSize().width, initialTextAreaHeight * 3));
+        selectedItemsTextArea.setEditable(false);
+        cadastroDeCompra.add(new JScrollPane(selectedItemsTextArea));
     
         selectItemsButton.addActionListener(e -> {
             try {
-                arrayItemsCompra.add(selectItemsAndQuantity(arrayProduto, cadastroDeCompra));
-                System.out.println(arrayItemsCompra.toString());
+                ItemCompra selectedItem = selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
+                arrayItemsCompra.add(selectedItem);
+                
+                // Update the JTextArea to display the selected items
+                selectedItemsTextArea.append("Cód.: "+selectedItem.codigoProduto + " | Quantidade: "+selectedItem.qtde  +"\n");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-
         cadastroDeCompra.add(new JLabel("Parcelas totais:"));
         JTextField parcelasField = new JTextField();
         cadastroDeCompra.add(parcelasField);

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class ItemCompra {
-    private int qtde;
-    private Long codigoProduto;
+    public int qtde;
+    public Long codigoProduto;
     private Double precoUnitario;
     private Double valorTotal;
 
