@@ -1,5 +1,10 @@
 package org.POO_AC2.dominio.compra;
 
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.POO_AC2.dominio.produto.Produto;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
@@ -7,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class ItemCompra {
     private int qtde;
     private Long codigoProduto;
@@ -26,6 +31,13 @@ public class ItemCompra {
     }
 
     public ItemCompra(Produto selectedProduto, int quantidade) {
+    }
+
+    public ItemCompra(int qtde, Long codigoProduto, double precoUnitario, double valorTotal) {
+        this.qtde = qtde;
+        this.codigoProduto = codigoProduto;
+        this.precoUnitario = precoUnitario;
+        this.valorTotal = valorTotal;
     }
 
     public int getQtde(){

@@ -6,27 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.POO_AC2.dominio.cliente.Cliente;
 import org.POO_AC2.dominio.recursos.Json.Json;
 
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type") // Notação Json que define como o tipo da classe deve ser armazenado no json
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class") // Notação Json que define como o tipo da classe deve ser armazenado no json
+@JsonDeserialize(using = CompraDeserializer.class)
 public class Compra {
     private Long Id;
     private String dataCompra;
     private Double valorTotal;
     private Cliente cliente;
 
-    private ArrayList<ItemCompra> itensCompra;
+    private List<ItemCompra> itensCompra;
     private int parcelasTotais;
     private int parcelasPagas;
 
     private String ultimoPagamento;
 
-    public Compra(String dataCompra,Long codigo,  Long idCliente, ArrayList<ItemCompra> itensCompra, int parcelasTotais) throws IOException {
+    public Compra(String dataCompra,Long codigo,  Long idCliente, List<ItemCompra> itensCompra, int parcelasTotais) throws IOException {
         this.dataCompra = dataCompra;
         this.valorTotal = valorTotal((ArrayList<ItemCompra>) itensCompra);
         this.cliente = procurarCliente(idCliente); // procura o cliente pelo ID passado e o retorna para inicializar a compra.
@@ -38,6 +37,16 @@ public class Compra {
     }
 
     public Compra() {
+    }
+
+    public Compra(String dataCompra, double valorTotal, Cliente cliente, List<ItemCompra> itensCompra, int parcelasTotais, int parcelasPagas, String ultimoPagamento, Long id) {
+        this.dataCompra = dataCompra;
+        this.valorTotal = valorTotal;
+        this.cliente = cliente;
+        this.itensCompra = itensCompra;
+        this.parcelasTotais = parcelasTotais;
+        this.ultimoPagamento = ultimoPagamento;
+        this.Id = id;
     }
 
     public Long getId() {

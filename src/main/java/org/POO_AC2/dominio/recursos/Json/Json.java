@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Json {
 
@@ -19,7 +20,8 @@ public class Json {
     public static ObjectMapper getDefaultObjectMapper(){
         ObjectMapper defaultObjectMapper = new ObjectMapper();
         defaultObjectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY); // Configuração para guardar o tipo do objeto no json
-
+        //objectMapper.addMixIn(ArrayList.class, MixinArray.class);
+        defaultObjectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         return defaultObjectMapper;
     }
 
@@ -46,10 +48,10 @@ public class Json {
         objectMapper.writeValue(file, Array);
     }
 
-    public static <T> ArrayList<T> readAllData(File file, Class<T> objectType) throws IOException { // lê um arquivo e instancia um array de determinado tipo
+    public static <T> List<T> readAllData(File file, Class<T> objectType) throws IOException { // lê um arquivo e instancia um array de determinado tipo
         FileInputStream fileInputStream = new FileInputStream(file);
 
-        ArrayList<T> list = objectMapper.readValue(fileInputStream, new TypeReference<ArrayList<T>>() {
+        List<T> list = objectMapper.readValue(fileInputStream, new TypeReference<List<T>>() {
         });
 
         return list;
