@@ -1,1 +1,22 @@
-["java.util.ArrayList",[{"@class":"org.POO_AC2.dominio.cliente.PF","id":1,"nome":"Usuário","endereco":{"@class":"org.POO_AC2.dominio.cliente.Endereco","rua":"Usulândia","numero":210,"bairro":"Teste","cep":18190000,"cidade":"Usotários","estado":"Users"},"dataCadastro":"2023-11-14T12:35:28.313085300","cpf":"35553417821","qntParcelasMax":4}]]
+[
+  "java.util.ArrayList",
+  [
+    {
+      "@class": "org.POO_AC2.dominio.cliente.PF",
+      "id": 1,
+      "nome": "Usuário",
+      "endereco": {
+        "@class": "org.POO_AC2.dominio.cliente.Endereco",
+        "rua": "Usulândia",
+        "numero": 210,
+        "bairro": "Teste",
+        "cep": 18190000,
+        "cidade": "Usotários",
+        "estado": "Users"
+      },
+      "dataCadastro": "2023-11-14T12:35:28.313085300",
+      "cpf": "35553417821",
+      "qntParcelasMax": 4
+    }
+  ]
+]

@@ -726,7 +726,10 @@ public class Main {
         Compra c = new Compra(dataCompra,codigo, idCliente,arrayItemsCompra,Integer.parseInt(parcelasField.getText()));
         arrayCompra.add(c);
         Json.writeAllData(arrayCompra,fileCompra);
-
+        JOptionPane.showMessageDialog(null,
+        "Compra efetuada com sucesso.\nCódigo da compra para futuras atualizações: " + codigo  ,
+        "Compra Efetuada",
+        JOptionPane.INFORMATION_MESSAGE);
     
     }
     
@@ -755,10 +758,6 @@ public class Main {
             for (int index : selectedIndices) {
                 Produto selectedProduto = produtos.get(index);
                 int quantity = Integer.parseInt(quantityField.getText());
-                // Do something with the selected product and quantity (e.g., store in the purchase)
-                // ...
-    
-                // Optionally, you can display a message to the user or perform additional actions
                 JOptionPane.showMessageDialog(null, "Produto selecionado: " + selectedProduto.getNomeProduto() +
                         "\nQuantidade: " + quantity, "Seleção de Produtos", JOptionPane.INFORMATION_MESSAGE);
             }
