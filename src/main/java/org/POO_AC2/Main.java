@@ -120,7 +120,7 @@ public class Main {
 
         Long codigo;
         if (!arrayCliente.isEmpty()) {
-            codigo = arrayCliente.get(arrayCliente.size() - 1).getId() + 1;
+            codigo = arrayCliente.get(0).getId() + 1;
         } else {
             codigo = 1L;
         }
@@ -315,6 +315,8 @@ public class Main {
             arrayCliente.addAll(Json.readAllData(fileCliente, Cliente.class));
         }
 
+        boolean encontrou = false;
+
         // opções do tipo de cadastro
         String[] tipoCliente = { "Pessoa Física", "Pessoa Jurídica" };
         // JPanel para melhor exibição e UX.
@@ -354,7 +356,7 @@ public class Main {
                             int exclusaoPFResultado = JOptionPane.showConfirmDialog(
                                     null,
                                     exclusaoPFPanel,
-                                    "Cadastro de Pessoa Física",
+                                    "Deleção de Pessoa Física",
                                     JOptionPane.OK_CANCEL_OPTION,
                                     JOptionPane.PLAIN_MESSAGE,
                                     null);
@@ -368,18 +370,20 @@ public class Main {
                                     if (obj instanceof PF pf) {
                                         if (pf.getCpf().compareTo(cpf) == 0) {
                                             iterator.remove();
+                                            encontrou = true;
                                             Json.writeAllData(arrayCliente, fileCliente);
                                             JOptionPane.showMessageDialog(null,
                                                     "Exclusão de pessoa física efetuada com sucesso.", titulo,
                                                     JOptionPane.WARNING_MESSAGE, null);
-                                        } else {
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Nenhum cliente com este CPF encontrado, favor verificar se os dados foram digitados corretamente.",
-                                                    titulo,
-                                                    JOptionPane.WARNING_MESSAGE, null);
-                                            delecaoClientePorChave();
                                         }
+
                                     }
+                                }
+                                if(!encontrou){
+                                    JOptionPane.showMessageDialog(null,
+                                            "Nenhum cliente com este CPF encontrado, favor verificar se os dados foram digitados corretamente.",
+                                            titulo,
+                                            JOptionPane.WARNING_MESSAGE, null);
                                 }
 
                             } else {// se não clicou em ok, cadastro é cancelado
@@ -389,7 +393,7 @@ public class Main {
                             break;// fim do cadastro de pessoa física
                         case 1:// começo cadastro pessoa jurídica
                                // cria o JPanel para exibição dos campos e coleta de dados.
-                            JPanel exclusaoPJPanel = new JPanel(new GridLayout(10, 2));
+                            JPanel exclusaoPJPanel = new JPanel(new GridLayout(3, 2));
 
                             // campos para dados da pessoa física
                             exclusaoPJPanel.add(new JLabel("CNPJ:"));
@@ -414,17 +418,18 @@ public class Main {
                                         if (pj.getCnpj().compareTo(cnpj) == 0) {
                                             iterator.remove();
                                             Json.writeAllData(arrayCliente, fileCliente);
+                                            encontrou = true;
                                             JOptionPane.showMessageDialog(null,
                                                     "Exclusão de pessoa jurídica efetuada com sucesso.", titulo,
                                                     JOptionPane.WARNING_MESSAGE, null);
-                                        } else {
-                                            JOptionPane.showMessageDialog(null,
-                                                    "Nenhum cliente com este CNPJ encontrado, favor verificar se os dados foram digitados corretamente.",
-                                                    titulo,
-                                                    JOptionPane.WARNING_MESSAGE, null);
-                                            delecaoClientePorChave();
                                         }
                                     }
+                                }
+                                if(!encontrou){
+                                    JOptionPane.showMessageDialog(null,
+                                            "Nenhum cliente com este CNPJ encontrado, favor verificar se os dados foram digitados corretamente.",
+                                            titulo,
+                                            JOptionPane.WARNING_MESSAGE, null);
                                 }
 
                             } else {// se não clicou em ok, cadastro é cancelado
@@ -490,7 +495,7 @@ public class Main {
         }
 
         if (!arrayProduto.isEmpty()) {
-            codigo = arrayProduto.get(arrayProduto.size() - 1).getCodigo() + 1;
+            codigo = arrayProduto.get(0).getCodigo() + 1;
         } else {
             codigo = 1L;
         }
@@ -657,7 +662,7 @@ public class Main {
         long codigo;
 
         if (!arrayCompra.isEmpty()) {
-            codigo = arrayCompra.get(arrayCompra.size() - 1).getId() + 1;
+            codigo = arrayCompra.get(0).getId() + 1;
         } else {
             codigo = 1L;
         }

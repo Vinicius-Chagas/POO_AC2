@@ -263,7 +263,6 @@ public class Relatorios {
     public void relacaoPendencias() {
         try {
             ArrayList<Compra> arrayCompras = new ArrayList<>(Json.readAllData(fileCompra, Compra.class));
-            Json.stringfy(arrayCompras);
 
             // Criando tabela
             DefaultTableModel tableModel = new DefaultTableModel();
@@ -311,8 +310,7 @@ public class Relatorios {
             // Filtra o array apenas pelos itens que têm uma data de ultimo pagamento
             ArrayList<Compra> ultimasDez = new ArrayList<>(arrayCompras.stream().filter(o1 -> o1.getUltimoPagamento() != null).toList());
             // Ordena o array do maior para o menor uilizando a data do ultimo pagamento
-            ultimasDez.sort((o1, o2) -> LocalDateTime.parse(o1.getUltimoPagamento())
-                    .compareTo(LocalDateTime.parse(o2.getUltimoPagamento())));
+            ultimasDez.sort(Comparator.comparing(o -> LocalDateTime.parse(o.getUltimoPagamento())));
 
 
             DefaultTableModel tableModel = new DefaultTableModel();

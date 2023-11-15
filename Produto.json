@@ -11,6 +11,7 @@
     {
       "@class": "org.POO_AC2.dominio.produto.Produto",
       "codigo": 2,
+
       "nomeProduto": "Chave de fenda",
       "descricao": "Útil",
       "preco": 25.0
