@@ -73,8 +73,8 @@
         ]
       ],
       "parcelasTotais": 7,
-      "parcelasPagas": 0,
-      "ultimoPagamento": null,
+      "parcelasPagas": 4,
+      "ultimoPagamento": "2023-11-14T23:10:24.873914800",
       "id": 3
     },
     {
@@ -113,6 +113,51 @@
       "parcelasTotais": 5,
       "parcelasPagas": 3,
       "ultimoPagamento": "2023-11-14T21:25:16.085303100",
+      "id": 2
+    },
+    {
+      "@class": "org.POO_AC2.dominio.compra.Compra",
+      "dataCompra": "2023-11-14T23:09:27.001561300",
+      "valorTotal": 56.0,
+      "cliente": {
+        "@class": "org.POO_AC2.dominio.cliente.PF",
+        "id": 1,
+        "nome": "Usuário",
+        "endereco": {
+          "@class": "org.POO_AC2.dominio.cliente.Endereco",
+          "rua": "Usulândia",
+          "numero": 210,
+          "bairro": "Teste",
+          "cep": 18190000,
+          "cidade": "Usotários",
+          "estado": "Users"
+        },
+        "dataCadastro": "2023-11-14T12:35:28.313085300",
+        "cpf": "35553417821",
+        "qntParcelasMax": 4
+      },
+      "itensCompra": [
+        "java.util.ArrayList",
+        [
+          {
+            "@class": "org.POO_AC2.dominio.compra.ItemCompra",
+            "qtde": 2,
+            "codigoProduto": 2,
+            "precoUnitario": 10.0,
+            "valorTotal": 20.0
+          },
+          {
+            "@class": "org.POO_AC2.dominio.compra.ItemCompra",
+            "qtde": 3,
+            "codigoProduto": 3,
+            "precoUnitario": 12.0,
+            "valorTotal": 36.0
+          }
+        ]
+      ],
+      "parcelasTotais": 3,
+      "parcelasPagas": 0,
+      "ultimoPagamento": null,
       "id": 2
     },
     {

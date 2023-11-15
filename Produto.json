@@ -15,6 +15,21 @@
       "descricao": "gostoso",
       "preco": 10.0,
       "dataValidade": "12/02/2022"
+    },
+    {
+      "@class": "org.POO_AC2.dominio.produto.Produto",
+      "codigo": 3,
+      "nomeProduto": "feijao",
+      "descricao": "lkjlkj",
+      "preco": 12.0
+    },
+    {
+      "@class": "org.POO_AC2.dominio.produto.Pereciveis",
+      "codigo": 4,
+      "nomeProduto": "fs",
+      "descricao": "fas",
+      "preco": 11.0,
+      "dataValidade": "15/11/2023"
     }
   ]
 ]
