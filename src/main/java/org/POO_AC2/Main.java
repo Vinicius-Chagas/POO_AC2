@@ -883,7 +883,8 @@ public class Main {
 
                             if (confirmacao == JOptionPane.OK_OPTION) {
                                 // Continua com a operação
-                                compraSelecionada.setParcelasPagas(parcelasPagasInput);
+                                compraSelecionada.setParcelasPagas(parcelasPagasInput + compraSelecionada.getParcelasPagas());
+                                compraSelecionada.setUltimoPagamento(LocalDateTime.now().toString());
                                 Json.writeAllData(arrayCompra, fileCompra);
                                 JOptionPane.showMessageDialog(null,
                                         "Operação realizada com sucesso!",
@@ -900,7 +901,8 @@ public class Main {
                                     JOptionPane.WARNING_MESSAGE);
                         } else {
                             // Operação normal
-                            compraSelecionada.setParcelasPagas(parcelasPagasInput);
+                            compraSelecionada.setParcelasPagas(parcelasPagasInput + compraSelecionada.getParcelasPagas());
+                            compraSelecionada.setUltimoPagamento(LocalDateTime.now().toString());
                             Json.writeAllData(arrayCompra, fileCompra);
                             JOptionPane.showMessageDialog(null,
                                     "Operação realizada com sucesso!",

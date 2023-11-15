@@ -44,6 +44,7 @@ public class Compra {
         this.valorTotal = valorTotal;
         this.cliente = cliente;
         this.itensCompra = itensCompra;
+        this.parcelasPagas = parcelasPagas;
         this.parcelasTotais = parcelasTotais;
         this.ultimoPagamento = ultimoPagamento;
         this.Id = id;
