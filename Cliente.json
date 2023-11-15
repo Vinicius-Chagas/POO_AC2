@@ -4,19 +4,88 @@
     {
       "@class": "org.POO_AC2.dominio.cliente.PF",
       "id": 1,
-      "nome": "Usuário",
+      "nome": "João Silva Neto",
       "endereco": {
         "@class": "org.POO_AC2.dominio.cliente.Endereco",
-        "rua": "Usulândia",
-        "numero": 210,
-        "bairro": "Teste",
+        "rua": "Moreiro Duarte",
+        "numero": 117,
+        "bairro": "Brigadeiro Tobias",
         "cep": 18190000,
-        "cidade": "Usotários",
-        "estado": "Users"
+        "cidade": "São Miguel Arcanjo",
+        "estado": "SP"
       },
-      "dataCadastro": "2023-11-14T12:35:28.313085300",
+      "dataCadastro": "2023-11-14T22:39:49.131826900",
+      "cpf": "14448724982",
+      "qntParcelasMax": 12
+    },
+    {
+      "@class": "org.POO_AC2.dominio.cliente.PJ",
+      "id": 2,
+      "nome": "Facens",
+      "endereco": {
+        "@class": "org.POO_AC2.dominio.cliente.Endereco",
+        "rua": "Facens",
+        "numero": 1232,
+        "bairro": "Aparecidinha",
+        "cep": 59987666,
+        "cidade": "Sorocaba",
+        "estado": "SP"
+      },
+      "dataCadastro": "2023-11-14T22:41:28.791084600",
+      "cnpj": "98754687954782",
+      "razaoSocial": "Estudos",
+      "prazoMaximo": 36
+    },
+    {
+      "@class": "org.POO_AC2.dominio.cliente.PF",
+      "id": 3,
+      "nome": "Tales Augusto Sartório Furlan",
+      "endereco": {
+        "@class": "org.POO_AC2.dominio.cliente.Endereco",
+        "rua": "Alameda das Vitórias Régias",
+        "numero": 210,
+        "bairro": "Cond. Village Ipanema",
+        "cep": 18190000,
+        "cidade": "Araçoiaba da Serra",
+        "estado": "SP"
+      },
+      "dataCadastro": "2023-11-14T22:42:39.918046900",
       "cpf": "35553417821",
-      "qntParcelasMax": 4
+      "qntParcelasMax": 2
+    },
+    {
+      "@class": "org.POO_AC2.dominio.cliente.PF",
+      "id": 4,
+      "nome": "João Júnior",
+      "endereco": {
+        "@class": "org.POO_AC2.dominio.cliente.Endereco",
+        "rua": "11 de Setembro",
+        "numero": 654,
+        "bairro": "Vitória",
+        "cep": 35564111,
+        "cidade": "Salto de Pirapora",
+        "estado": "SP"
+      },
+      "dataCadastro": "2023-11-14T22:43:42.082176600",
+      "cpf": "78884124571",
+      "qntParcelasMax": 8
+    },
+    {
+      "@class": "org.POO_AC2.dominio.cliente.PF",
+      "id": 5,
+      "nome": "Helena",
+      "endereco": {
+        "@class": "org.POO_AC2.dominio.cliente.Endereco",
+        "rua": "Liberdade",
+        "numero": 875,
+        "bairro": "Vitória",
+        "cep": 45127333,
+        "cidade": "São Paulo",
+        "estado": "SP"
+      },
+      "dataCadastro": "2023-11-14T22:59:05.786865700",
+      "cpf": "51218523462",
+      "qntParcelasMax": 9
     }
   ]
 ]

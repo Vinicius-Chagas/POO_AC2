@@ -4,17 +4,39 @@
     {
       "@class": "org.POO_AC2.dominio.produto.Produto",
       "codigo": 1,
-      "nomeProduto": "Feijão",
-      "descricao": "gostoso",
-      "preco": 10.0
+      "nomeProduto": "Isqueiro",
+      "descricao": "Feito para acender fogo",
+      "preco": 8.0
+    },
+    {
+      "@class": "org.POO_AC2.dominio.produto.Produto",
+      "codigo": 2,
+      "nomeProduto": "Chave de fenda",
+      "descricao": "Útil",
+      "preco": 25.0
     },
     {
       "@class": "org.POO_AC2.dominio.produto.Pereciveis",
-      "codigo": 2,
-      "nomeProduto": "carne",
-      "descricao": "gostoso",
-      "preco": 10.0,
-      "dataValidade": "12/02/2022"
+      "codigo": 3,
+      "nomeProduto": "Maçã",
+      "descricao": "Deliciosa",
+      "preco": 4.0,
+      "dataValidade": "12/11/2023"
+    },
+    {
+      "@class": "org.POO_AC2.dominio.produto.Pereciveis",
+      "codigo": 4,
+      "nomeProduto": "Banana",
+      "descricao": "Rica em Potássio",
+      "preco": 7.0,
+      "dataValidade": "11/07/2024"
+    },
+    {
+      "@class": "org.POO_AC2.dominio.produto.Produto",
+      "codigo": 5,
+      "nomeProduto": "Martelo",
+      "descricao": "Bem robusto",
+      "preco": 40.0
     }
   ]
 ]

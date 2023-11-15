@@ -38,7 +38,7 @@ public class Main {
                     "[3] Deletar Cliente pelo nome",
                     "[4] Cadastro de produtos",
                     "[5] Efetuacao de uma compra",
-                    "[6] Atualizacao da situacao de pagamentos de uma compra",
+                    "[6] Atualizacao da situação de pagamentos de uma compra",
                     "[7] Relatorios",
                     "[8] sair"
             };
@@ -85,7 +85,7 @@ public class Main {
                             case "[5] Efetuacao de uma compra":
                                 novaCompra();
                                 break;
-                            case "[6] Atualizacao da situacao de pagamentos de uma compra":
+                            case "[6] Atualizacao da situação de pagamentos de uma compra":
                                 atualizarPagamentoCompra();
                                 break;
                             case "[7] Relatorios":
@@ -630,7 +630,7 @@ public class Main {
                 j++;
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Nenhum tipo de cliente selecionado.", titulo,
+            JOptionPane.showMessageDialog(null, "Nenhum tipo de produto selecionado.", titulo,
                     JOptionPane.WARNING_MESSAGE, null);
         }
     }
@@ -664,52 +664,64 @@ public class Main {
 
         JPanel cadastroDeCompra = new JPanel(new GridLayout(7, 2));
 
-        cadastroDeCompra.add(new JLabel("Compra número:"));
-        JTextField idField = new JTextField(Long.toString(codigo));
-        idField.setEnabled(false);
-        idField.setDisabledTextColor(Color.BLACK);
-        cadastroDeCompra.add(idField);
 
-        cadastroDeCompra.add(new JLabel("Data da compra:"));
-        JTextField dataField = new JTextField(LocalDateTime.now().toString());
-        dataField.setEnabled(false);
-        dataField.setDisabledTextColor(Color.BLACK);
-        cadastroDeCompra.add(dataField);
+cadastroDeCompra.add(new JLabel("Compra número:"));
+JTextField idField = new JTextField(Long.toString(codigo));
+idField.setEnabled(false);
+idField.setDisabledTextColor(Color.BLACK);
+cadastroDeCompra.add(idField);
 
-        cadastroDeCompra.add(new JLabel("Cliente:"));
-        String[] arrayStringClientes = arrayCliente.stream().map(c -> c.getId().toString() + " - " + c.getNome())
-                .toArray(String[]::new);
-        JComboBox<String> clienteCombobox = new JComboBox<>(arrayStringClientes);
-        cadastroDeCompra.add(clienteCombobox);
+cadastroDeCompra.add(new JLabel("Data da compra:"));
+JTextField dataField = new JTextField(LocalDateTime.now().toString());
+dataField.setEnabled(false);
+dataField.setDisabledTextColor(Color.BLACK);
+cadastroDeCompra.add(dataField);
 
-        cadastroDeCompra.add(new JLabel("Itens da compra:"));
-        JButton selectItemsButton = new JButton("Selecionar Itens");
-        cadastroDeCompra.add(selectItemsButton);
+cadastroDeCompra.add(new JLabel("Cliente:"));
+String[] arrayStringClientes = arrayCliente.stream().map(c -> c.getId().toString() + " - " + c.getNome())
+        .toArray(String[]::new);
+JComboBox<String> clienteCombobox = new JComboBox<>(arrayStringClientes);
+cadastroDeCompra.add(clienteCombobox);
 
-        ArrayList<ItemCompra> arrayItemsCompra = new ArrayList<>();
-        cadastroDeCompra.add(new JLabel("Itens selecionados:"));
-        JTextArea selectedItemsTextArea = new JTextArea();
-        int initialTextAreaHeight = selectedItemsTextArea.getPreferredSize().height;
-        selectedItemsTextArea.setPreferredSize(
-                new Dimension(selectedItemsTextArea.getPreferredSize().width, initialTextAreaHeight * 3));
-        selectedItemsTextArea.setEditable(false);
-        cadastroDeCompra.add(new JScrollPane(selectedItemsTextArea));
+cadastroDeCompra.add(new JLabel("Itens da compra:"));
+JButton selectItemsButton = new JButton("Selecionar Itens");
+cadastroDeCompra.add(selectItemsButton);
 
-        selectItemsButton.addActionListener(e -> {
-            try {
-                ItemCompra selectedItem = selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
-                arrayItemsCompra.add(selectedItem);
+ArrayList<ItemCompra> arrayItemsCompra = new ArrayList<>();
+cadastroDeCompra.add(new JLabel("Itens selecionados:"));
+JTextArea selectedItemsTextArea = new JTextArea();
+int initialTextAreaHeight = selectedItemsTextArea.getPreferredSize().height;
+selectedItemsTextArea.setPreferredSize(
+        new Dimension(selectedItemsTextArea.getPreferredSize().width, initialTextAreaHeight * 3));
+selectedItemsTextArea.setEditable(false);
+JScrollPane scrollPane = new JScrollPane(selectedItemsTextArea);
 
-                // Update the JTextArea to display the selected items
-                selectedItemsTextArea
-                        .append("Cód.: " + selectedItem.codigoProduto + " | Quantidade: " + selectedItem.qtde + "\n");
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        cadastroDeCompra.add(new JLabel("Parcelas totais:"));
-        JTextField parcelasField = new JTextField();
-        cadastroDeCompra.add(parcelasField);
+// Create a new panel with BorderLayout
+JPanel textAreaPanel = new JPanel(new BorderLayout());
+textAreaPanel.add(scrollPane, BorderLayout.CENTER);
+
+// Add the new panel to the main panel
+cadastroDeCompra.add(textAreaPanel);
+
+selectItemsButton.addActionListener(e -> {
+    try {
+        ItemCompra selectedItem = selectItemsAndQuantity(arrayProduto, cadastroDeCompra);
+        arrayItemsCompra.add(selectedItem);
+
+        // Update the JTextArea to display the selected items
+        selectedItemsTextArea
+                .append("Cód.: " + selectedItem.codigoProduto + " | Quantidade: " + selectedItem.qtde + "\n");
+    } catch (IOException ex) {
+        throw new RuntimeException(ex);
+    }
+});
+cadastroDeCompra.add(new JLabel("Parcelas totais:"));
+JTextField parcelasField = new JTextField();
+cadastroDeCompra.add(parcelasField);
+
+cadastroDeCompra.revalidate();
+cadastroDeCompra.repaint();
+
 
         // Dá exception quando não digita quantidade e clicka em OK, mas não encerra o
         // app
